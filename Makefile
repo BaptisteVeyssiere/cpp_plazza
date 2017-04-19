@@ -16,7 +16,8 @@ CXX	= g++
 MKDIR	= mkdir -p
 
 SRC	= src/main.cpp \
-	src/Parser.cpp
+	src/Parser.cpp \
+	src/Process.cpp
 
 SRCDIR	= src
 
