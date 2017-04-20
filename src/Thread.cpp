@@ -4,6 +4,10 @@
 
 #include "Thread.hpp"
 
+Thread::Thread(std::shared_ptr<t_data> data) {
+    std::unique_ptr<std::thread> th(new std::thread(&Thread::mainLoop, this, data));
+    thread.swap(th);
+}
 
 Thread::~Thread() {
 
@@ -19,4 +23,10 @@ bool Thread::joinable() const noexcept {
 
 void Thread::detach() {
     thread->detach();
+}
+
+void Thread::mainLoop(std::shared_ptr<t_data> data) {
+    while (1) {
+        std::this_thread::yield();
+    }
 }

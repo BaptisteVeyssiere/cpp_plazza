@@ -12,14 +12,11 @@ class Thread {
 
 private:
 
-    std::shared_ptr<std::thread>    thread;
+    std::unique_ptr<std::thread>    thread;
 
 public:
 
-    template <class Fn, class... Args>
-    Thread(Fn &&fn, Args&&... args) {
-        thread = std::make_shared<std::thread>(fn, args...);
-    }
+    Thread(std::shared_ptr<t_data> data);
 
     ~Thread();
 
@@ -28,7 +25,10 @@ public:
 
     void detach();
 
+    void mainLoop(std::shared_ptr<t_data> data);
+
 };
+
 
 
 #endif //PLAZZA_THREAD_HPP
