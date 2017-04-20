@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 19 11:11:25 2017 Nathan Scutari
-// Last update Wed Apr 19 11:54:11 2017 Nathan Scutari
+// Last update Thu Apr 20 15:06:56 2017 Nathan Scutari
 //
 
 #ifndef __PROCESS_HPP__
@@ -15,7 +15,6 @@ class Process
 {
 private:
   int	t_nbr;
-  int	id;
 
 private:
   Process(Process &);
@@ -23,10 +22,10 @@ private:
   Process();
 
 public:
-  Process(int, int);
+  Process(int);
   ~Process();
 
-  int	is_full();
+  int	clone(int);
 };
 
 #endif // !__PROCESS_HPP__

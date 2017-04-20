@@ -5,13 +5,14 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Thu Apr 13 18:08:46 2017 Baptiste Veyssiere
-// Last update Mon Apr 17 22:22:42 2017 Baptiste Veyssiere
+// Last update Thu Apr 20 15:08:08 2017 Nathan Scutari
 //
 
 #include <iostream>
 #include <regex>
 #include <csignal>
 #include "Parser.hpp"
+#include "Process.hpp"
 #define QUESTION	"Do you need something ? "
 
 static void			main_loop(const int thread_nbr)
@@ -37,6 +38,7 @@ int		main(int ac, char **av)
 {
   int		thread_nbr;
   std::regex	pattern("^[0-9]+$");
+  Process	p(2);
 
   std::signal(SIGINT, SIG_IGN);
   std::signal(SIGTERM, SIG_IGN);
@@ -48,6 +50,8 @@ int		main(int ac, char **av)
 	  std::cerr << "Usage: ./plazza nbr_of_thread" << std::endl;
 	  return (1);
 	}
+      if ((p.clone(42)))
+	return (0);
       main_loop(thread_nbr);
     }
   catch (const std::exception &e)
