@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Thu Apr 13 18:39:08 2017 Baptiste Veyssiere
-// Last update Mon Apr 17 21:01:25 2017 Baptiste Veyssiere
+// Last update Wed Apr 26 17:09:31 2017 Nathan Scutari
 //
 
 #ifndef __COMMAND_HPP__
@@ -22,6 +22,7 @@ typedef struct	s_command
 {
   std::string	file;
   Information	information;
+  unsigned int	threads;
 }		t_command;
 
 #endif // !__COMMAND_HPP__

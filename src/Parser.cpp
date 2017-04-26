@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Thu Apr 13 18:42:14 2017 Baptiste Veyssiere
-// Last update Mon Apr 17 22:28:15 2017 Baptiste Veyssiere
+// Last update Wed Apr 26 17:17:47 2017 Nathan Scutari
 //
 
 #include "Parser.hpp"
@@ -47,7 +47,7 @@ void	Parser::fileExists(const std::string &name) const
 
 void	Parser::create_command(const std::string &file, const std::string &information, std::vector<t_command> &command_list) const
 {
-  t_command	command = { file, Information::PHONE_NUMBER };
+  t_command	command = { file, Information::PHONE_NUMBER, 0 };
   std::vector<std::string>	information_list =
     {
       "PHONE_NUMBER",

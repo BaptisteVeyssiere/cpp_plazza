@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <thread>
+#include "data.hpp"
 
 class Thread {
 

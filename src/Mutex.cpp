@@ -5,9 +5,9 @@
 #include "Mutex.hpp"
 
 
-Mutex::Mutex() {
-    mutex = std::make_shared<std::mutex>();
-}
+Mutex::Mutex()
+  : mutex(std::make_shared<std::mutex>())
+{}
 
 Mutex::~Mutex() {
 }

@@ -17,13 +17,17 @@ MKDIR	= mkdir -p
 
 SRC	= src/main.cpp \
 	src/Parser.cpp \
-	src/Process.cpp
+	src/Process.cpp \
+	src/Mutex.cpp \
+	src/Thread.cpp
 
 SRCDIR	= src
 
 OBJDIR	= obj
 
 OBJ	= $(SRC:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
+
+LDFLAGS	= -pthread
 
 CXXFLAGS	= -Iinclude -W -Wextra -Wall -Wpointer-arith -Wcast-qual -Wcast-align -Wconversion -Wdouble-promotion -Wold-style-cast -Wfloat-equal -Woverloaded-virtual -Wshadow -Weffc++ -Werror -Wfatal-errors
 

@@ -12,16 +12,16 @@ class Mutex {
 
 private:
 
-    std::shared_ptr<std::mutex>    mutex;
+  std::shared_ptr<std::mutex>    mutex;
 
 public:
 
-    Mutex();
-    ~Mutex();
+  Mutex();
+  ~Mutex();
 
-    void    lock();
-    bool    try_lock();
-    void    unlock();
+  void    lock();
+  bool    try_lock();
+  void    unlock();
 
 };
 
