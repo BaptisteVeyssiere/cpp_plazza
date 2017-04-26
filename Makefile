@@ -19,6 +19,8 @@ SRC	= src/main.cpp \
 	src/Parser.cpp \
 	src/Process.cpp \
 	src/Mutex.cpp \
+	src/Main_Process.cpp \
+	src/Named_pipe.cpp \
 	src/Thread.cpp
 
 SRCDIR	= src
