@@ -105,6 +105,5 @@ void Thread::mainLoop(std::shared_ptr<t_data> data) {
             data->running = 0;
         }
         std::this_thread::yield();
-        break;
     }
 }
