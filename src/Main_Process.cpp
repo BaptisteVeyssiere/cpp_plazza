@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Thu Apr 27 00:36:41 2017 Baptiste Veyssiere
+// Last update Thu Apr 27 15:45:32 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
@@ -27,6 +27,8 @@ void	Main_Process::loop()
   std::cout << QUESTION;
   while (getline(std::cin, command))
     {
+      if (command == "exit")
+	break;
       parser.parse(command, command_list);
       this->process_command(command_list);
       command.clear();
@@ -47,7 +49,9 @@ void	Main_Process::create_new_process()
 {
   if (this->pattern.clone(this->process_nbr))
     exit(0);
+  std::cout << "Opening fifo" << std::endl;
   this->Add_pipe();
+  std::cout << "Opened fifo" << std::endl;
   ++this->process_nbr;
 }
 

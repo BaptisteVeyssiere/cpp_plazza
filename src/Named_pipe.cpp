@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Thu Apr 27 14:56:13 2017 Baptiste Veyssiere
+// Last update Thu Apr 27 15:34:58 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -109,13 +109,20 @@ Named_pipe	&Named_pipe::operator<<(const t_command &command)
   return (*this);
 }
 
-Named_pipe	&Named_pipe::operator>>(t_command &command)
+Named_pipe		&Named_pipe::operator>>(t_command &command)
 {
-  int		info;
+  int			info;
+  std::stringstream	streamline;
+  std::string		line;
 
-  this->in >> command.file;
-  this->in >> info;
-  command.information = static_cast<Information>(info);
-  this->in >> command.threads;
+  getline(this->in, line);
+  if (this->in.gcount() > 0)
+    {
+      streamline << line;
+      streamline >> command.file;
+      streamline >> info;
+      command.information = static_cast<Information>(info);
+      streamline >> command.threads;
+    }
   return (*this);
 }

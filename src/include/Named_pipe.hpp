@@ -7,7 +7,6 @@
 
 #include <string>
 #include <fstream>
-#include <sstream>
 #include "sys/stat.h"
 #include "sys/types.h"
 #include "command.hpp"
