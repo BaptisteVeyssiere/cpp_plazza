@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 26 17:14:58 2017 Nathan Scutari
-// Last update Wed Apr 26 17:46:42 2017 Nathan Scutari
+// Last update Thu Apr 27 15:40:21 2017 Nathan Scutari
 //
 
 #ifndef __DATA_HPP__

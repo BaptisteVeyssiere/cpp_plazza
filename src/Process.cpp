@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 19 11:21:23 2017 Nathan Scutari
-// Last update Wed Apr 26 17:46:17 2017 Nathan Scutari
+// Last update Thu Apr 27 16:47:31 2017 Nathan Scutari
 //
 
 #include <iostream>
@@ -14,10 +14,81 @@
 #include "Thread.hpp"
 
 Process::Process(int thread_nbr)
-  : threads(), d_list(), t_nbr(thread_nbr)
+  : threads(), d_list(), orders(), t_nbr(thread_nbr), pipe(NULL), time_c(0), timer(0)
 {
   if (t_nbr < 1)
     throw std::exception();
+}
+
+t_command	Process::order_nbr()
+{
+  t_command	order = { "ok", Information::PHONE_NUMBER, 0 };
+
+  order.threads = static_cast<unsigned int>(orders.size());
+  for (std::list<std::shared_ptr<t_data>>::iterator it = d_list.begin() ; it != d_list.end() ; ++it)
+    {
+      if ((*it)->running == true)
+	++order.threads;
+    }
+  return (order);
+}
+
+void	Process::assign_order(t_command order)
+{
+  for (std::list<std::shared_ptr<t_data>>::iterator it = d_list.begin() ; it != d_list.end() ; ++it)
+    {
+      if ((*it)->running == false)
+	{
+	  (*it)->running = 1;
+	  (*it)->command = order;
+	  (*it)->ready = 1;
+	}
+    }
+}
+
+int	Process::orders_to_threads()
+{
+  int		threads_running(0);
+
+  for (int i = 0 ; i < t_nbr ; ++i)
+    ++threads_running;
+  if (threads_running == t_nbr)
+    return (0);
+  else if (orders.size() > 0)
+    {
+      timer = 0;
+      while (threads_running < t_nbr && orders.size() > 0)
+	{
+	  assign_order(orders.front());
+	  orders.pop_front();
+	  ++threads_running;
+	}
+    }
+  else if (threads_running == 0)
+    {
+      if (timer == 0)
+	{
+	  timer = 1;
+	  time_c = time(NULL);
+	}
+      if (time(NULL) - time_c >= 5)
+	return (1);
+    }
+  return (0);
+}
+
+void	Process::thread_control(void)
+{
+  t_data	data;
+  t_command	order = { "", Information::PHONE_NUMBER, 0 };
+
+  *pipe >> order;
+  if (order.file == "" && order.threads == 1)
+    *pipe << order_nbr();
+  else if (order.file != "" && order.threads == 0)
+    orders.push_back(order);
+  else if (orders_to_threads())
+    return ;
 }
 
 int	Process::clone(int id)
@@ -29,7 +100,7 @@ int	Process::clone(int id)
     throw std::exception();
   else if (pid == 0)
     {
-      id = id;
+      pipe = new Named_pipe("/tmp/plazza_" + std::to_string(id) + "_out", "/tmp/plazza_" + std::to_string(id) + "_in");
       data = std::make_shared<t_data>();
       data->ready = 0;
       data->running = 0;
@@ -38,11 +109,14 @@ int	Process::clone(int id)
 	  d_list.push_back(data);
 	  threads.push_back(std::make_unique<Thread>(d_list.back()));
 	}
-      //threads  (id)
+      thread_control();
       return (1);
     }
   return (0);
 }
 
 Process::~Process()
-{}
+{
+  if (pipe)
+    delete pipe;
+}
