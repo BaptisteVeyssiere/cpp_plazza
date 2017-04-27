@@ -76,34 +76,41 @@ void Thread::findSomething(std::vector<std::string> &data, std::string const& me
     }
 }
 
+std::string Thread::getFileData(std::string const& path)
+{
+    std::ifstream   file(path, std::ios::in | std::ios::ate);
+    if (file.is_open()) {
+        std::streampos size = file.tellg();
+        if (!file.fail() && size > 0) {
+            std::vector<char> fileMem(static_cast<unsigned long>(size));
+            file.seekg(0, std::ios::beg);
+            if (!file.fail()) {
+                file.read(fileMem.data(), static_cast<std::streamsize>(size));
+                if (!file.fail()) {
+                    return (std::string(fileMem.data()));
+                }
+            }
+        }
+        file.close();
+    }
+    std::cerr << "Something went wrong with the given file : " << path << std::endl;
+    return (std::string(""));
+}
+
 void Thread::mainLoop(std::shared_ptr<t_data> data) {
     while (1) {
-        if (data->ready) {
-            data->running = 1;
-            data->ready = 0;
-            std::ifstream   file(data->command.file, std::ios::in | std::ios::binary | std::ios::ate);
-            if (file.is_open()) {
-                std::streampos size = file.tellg();
-                if (!file.fail() && size > 0) {
-                    std::vector<char> fileMem(static_cast<unsigned long>(size));
-                    file.seekg(0, std::ios::beg);
-                    if (!file.fail()) {
-                        file.read(fileMem.data(), static_cast<std::streamsize>(size));
-                        if (!file.fail()) {
-                            std::string mem(fileMem.data());
-                            std::vector<std::string> fileData;
-                            findSomething(fileData, mem, data->command.information);
-                            std::for_each(fileData.begin(), fileData.end(),
-                                          [&](std::string &val) { std::cout << val << std::endl; });
-                        }
-                    }
-                }
-                file.close();
-            } else {
-                std::cerr << "Something went wrong with the given file : " << data->command.file << std::endl;
-            }
-            data->running = 0;
+        while (!data->ready) {
+            std::this_thread::yield();
         }
-        std::this_thread::yield();
+        data->running = 1;
+        data->ready = 0;
+        std::string mem = getFileData(data->command.file);
+        if (mem != "") {
+            std::vector<std::string> fileData;
+            findSomething(fileData, mem, data->command.information);
+            std::for_each(fileData.begin(), fileData.end(),
+                          [&](std::string &val) { std::cout << val << std::endl; });
+        }
+        data->running = 0;
     }
 }

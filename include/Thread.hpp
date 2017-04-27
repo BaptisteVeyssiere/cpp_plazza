@@ -14,26 +14,27 @@ class Thread {
 
 private:
 
-    std::unique_ptr<std::thread>    thread;
+  std::unique_ptr<std::thread>    thread;
 
 public:
 
-    Thread(std::shared_ptr<t_data> data);
+  Thread(std::shared_ptr<t_data> data);
 
-    ~Thread();
+  ~Thread();
 
-    void join();
-    bool joinable() const noexcept;
+  void join();
+  bool joinable() const noexcept;
 
-    void detach();
+  void detach();
 
 private:
 
-    void findMail(std::vector<std::string> &data, std::string const& mem);
-    void findIP(std::vector<std::string> &data, std::string const& mem);
-    void findPhone(std::vector<std::string> &data, std::string const& mem);
-    void findSomething(std::vector<std::string> &data, std::string const& mem, Information const& info);
-    void mainLoop(std::shared_ptr<t_data> data);
+  std::string getFileData(std::string const& path);
+  void findMail(std::vector<std::string> &data, std::string const& mem);
+  void findIP(std::vector<std::string> &data, std::string const& mem);
+  void findPhone(std::vector<std::string> &data, std::string const& mem);
+  void findSomething(std::vector<std::string> &data, std::string const& mem, Information const& info);
+  void mainLoop(std::shared_ptr<t_data> data);
 
 };
 
