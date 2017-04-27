@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Thu Apr 27 15:34:58 2017 Baptiste Veyssiere
+// Last update Thu Apr 27 16:04:40 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -105,7 +105,7 @@ void	Named_pipe::close_out(void)
 
 Named_pipe	&Named_pipe::operator<<(const t_command &command)
 {
-  this->out << command.file << " " << command.information << " " << command.threads << " ";
+  this->out << command.file << " " << command.information << " " << command.threads << std::endl;
   return (*this);
 }
 
