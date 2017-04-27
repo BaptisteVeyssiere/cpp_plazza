@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Thu Apr 27 14:22:11 2017 Baptiste Veyssiere
+// Last update Thu Apr 27 14:56:13 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -34,6 +34,8 @@ Named_pipe::Named_pipe(const std::string &path_i, const std::string &path_o)
   this->path_out = path_o;
   this->in.close();
   this->out.close();
+  this->open_in();
+  this->open_out();
 }
 
 Named_pipe::Named_pipe(const Named_pipe &other)
@@ -41,6 +43,8 @@ Named_pipe::Named_pipe(const Named_pipe &other)
 {
   this->in.close();
   this->out.close();
+  this->open_in();
+  this->open_out();
 }
 
 Named_pipe::~Named_pipe()
@@ -101,9 +105,7 @@ void	Named_pipe::close_out(void)
 
 Named_pipe	&Named_pipe::operator<<(const t_command &command)
 {
-  this->open_out();
   this->out << command.file << " " << command.information << " " << command.threads << " ";
-  this->close_out();
   return (*this);
 }
 
@@ -111,11 +113,9 @@ Named_pipe	&Named_pipe::operator>>(t_command &command)
 {
   int		info;
 
-  this->open_in();
   this->in >> command.file;
   this->in >> info;
   command.information = static_cast<Information>(info);
   this->in >> command.threads;
-  this->close_in();
   return (*this);
 }
