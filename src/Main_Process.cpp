@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Thu Apr 27 15:45:32 2017 Baptiste Veyssiere
+// Last update Thu Apr 27 16:59:59 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
@@ -27,8 +27,6 @@ void	Main_Process::loop()
   std::cout << QUESTION;
   while (getline(std::cin, command))
     {
-      if (command == "exit")
-	break;
       parser.parse(command, command_list);
       this->process_command(command_list);
       command.clear();
@@ -40,7 +38,8 @@ void	Main_Process::loop()
 void	Main_Process::Add_pipe()
 {
   Named_pipe	pipe("/tmp/plazza" + std::to_string(this->process_nbr) + "_in",
-		     "/tmp/plazza" + std::to_string(this->process_nbr) + "_out");
+		     "/tmp/plazza" + std::to_string(this->process_nbr) + "_out",
+		     false);
 
   this->pipe_tab.push_back(pipe);
 }
@@ -49,9 +48,7 @@ void	Main_Process::create_new_process()
 {
   if (this->pattern.clone(this->process_nbr))
     exit(0);
-  std::cout << "Opening fifo" << std::endl;
   this->Add_pipe();
-  std::cout << "Opened fifo" << std::endl;
   ++this->process_nbr;
 }
 
@@ -68,8 +65,11 @@ void	Main_Process::process_command(std::vector<t_command> &command_list)
       min = this->thread_nbr * 2;
       for (unsigned int i = 0; i < this->process_nbr; i++)
 	{
+	  thread_request.file = "";
+	  thread_request.threads = 1;
 	  this->pipe_tab[i] << thread_request;
-	  this->pipe_tab[i] >> thread_request;
+	  while (thread_request.file != "ok")
+	    this->pipe_tab[i] >> thread_request;
 	  if (thread_request.threads < min)
 	    {
 	      min = thread_request.threads;

@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Thu Apr 27 16:04:40 2017 Baptiste Veyssiere
+// Last update Thu Apr 27 19:09:20 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -13,7 +13,7 @@
 #include <cstring>
 #include "Named_pipe.hpp"
 
-Named_pipe::Named_pipe(const std::string &path_i, const std::string &path_o)
+Named_pipe::Named_pipe(const std::string &path_i, const std::string &path_o, bool order)
   : in(""), out(""), path_in(path_i), path_out(path_o)
 {
   if (this->checkFifo(path_i) == false && mkfifo(path_i.c_str(), 0666) == -1)
@@ -32,10 +32,14 @@ Named_pipe::Named_pipe(const std::string &path_i, const std::string &path_o)
     }
   this->path_in = path_i;
   this->path_out = path_o;
+  std::cout << "path_in = " << this->path_in << " & path_out = " << this->path_out << std::endl;
   this->in.close();
   this->out.close();
-  this->open_in();
+  if (order == true)
+    this->open_in();
   this->open_out();
+  if (order == false)
+    this->open_in();
 }
 
 Named_pipe::Named_pipe(const Named_pipe &other)

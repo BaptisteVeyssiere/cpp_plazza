@@ -24,7 +24,7 @@ private:
   Named_pipe  &operator=(const Named_pipe &);
 
 public:
-  Named_pipe(const std::string &, const std::string &);
+  Named_pipe(const std::string &, const std::string &, bool);
   Named_pipe(const Named_pipe &);
   virtual ~Named_pipe();
   Named_pipe	&operator<<(const t_command &);
