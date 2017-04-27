@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 19 11:21:23 2017 Nathan Scutari
-// Last update Thu Apr 27 16:47:31 2017 Nathan Scutari
+// Last update Thu Apr 27 16:57:31 2017 Nathan Scutari
 //
 
 #include <iostream>
@@ -100,7 +100,9 @@ int	Process::clone(int id)
     throw std::exception();
   else if (pid == 0)
     {
-      pipe = new Named_pipe("/tmp/plazza_" + std::to_string(id) + "_out", "/tmp/plazza_" + std::to_string(id) + "_in");
+      std::cout << "o" << std::endl;
+      pipe = new Named_pipe("/tmp/plazza_" + std::to_string(id) + "_out", "/tmp/plazza_" + std::to_string(id) + "_in", true);
+      std::cout << "k" << std::endl;
       data = std::make_shared<t_data>();
       data->ready = 0;
       data->running = 0;
