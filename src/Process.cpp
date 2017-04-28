@@ -5,16 +5,17 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 19 11:21:23 2017 Nathan Scutari
-// Last update Fri Apr 28 14:31:28 2017 Nathan Scutari
+// Last update Fri Apr 28 18:03:30 2017 Nathan Scutari
 //
 
 #include <iostream>
 #include <unistd.h>
 #include "Process.hpp"
 #include "Thread.hpp"
+#include "t_pool.hpp"
 
 Process::Process(int thread_nbr)
-  : threads(), d_list(), orders(), t_nbr(thread_nbr), pipe(NULL), time_c(0), timer(0)
+  : pool(NULL), orders(), t_nbr(thread_nbr), pipe(NULL), time_c(0), timer(0)
 {
   if (t_nbr < 1)
     throw std::exception();
@@ -25,25 +26,13 @@ t_command	Process::order_nbr()
   t_command	order = { "ok", Information::PHONE_NUMBER, 0 };
 
   order.threads = static_cast<unsigned int>(orders.size());
-  for (std::list<std::shared_ptr<t_data>>::iterator it = d_list.begin() ; it != d_list.end() ; ++it)
-    {
-      if ((*it)->running == true)
-	++order.threads;
-    }
+  order.threads = pool->getRunningThreadsNbr();
   return (order);
 }
 
 void	Process::assign_order(t_command order)
 {
-  for (std::list<std::shared_ptr<t_data>>::iterator it = d_list.begin() ; it != d_list.end() ; ++it)
-    {
-      if ((*it)->running == false)
-	{
-	  (*it)->running = 1;
-	  (*it)->command = order;
-	  (*it)->ready = 1;
-	}
-    }
+  pool->sendOrderToThread(order);
 }
 
 int	Process::orders_to_threads()
@@ -51,7 +40,7 @@ int	Process::orders_to_threads()
   int		threads_running(0);
 
   threads_running = order_nbr().threads;
-  if (threads_running == t_nbr)
+  if (threads_running >= t_nbr)
     return (0);
   else if (orders.size() > 0)
     {
@@ -102,7 +91,6 @@ void	Process::thread_control(int id)
 
 int	Process::clone(int id)
 {
-  std::shared_ptr<t_data>	data;
   pid_t				pid;
 
   if ((pid = fork()) == -1)
@@ -110,14 +98,7 @@ int	Process::clone(int id)
   else if (pid == 0)
     {
       pipe = new Named_pipe("/tmp/plazza" + std::to_string(id) + "_out", "/tmp/plazza" + std::to_string(id) + "_in", true);
-      data = std::make_shared<t_data>();
-      data->ready = 0;
-      data->running = 0;
-      for (int i = 0 ; i < t_nbr ; ++i)
-	{
-	  d_list.push_back(data);
-	  threads.push_back(std::make_unique<Thread>(d_list.back()));
-	}
+      pool = new T_pool(t_nbr);
       thread_control(id);
       return (1);
     }

@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 19 11:11:25 2017 Nathan Scutari
-// Last update Fri Apr 28 14:22:12 2017 Nathan Scutari
+// Last update Fri Apr 28 17:50:35 2017 Nathan Scutari
 //
 
 #ifndef __PROCESS_HPP__
@@ -14,6 +14,7 @@
 #include <memory>
 #include <ctime>
 #include <list>
+#include "t_pool.hpp"
 #include "command.hpp"
 #include "Thread.hpp"
 #include "data.hpp"
@@ -22,8 +23,7 @@
 class Process
 {
 private:
-  std::list<std::unique_ptr<Thread>>	threads;
-  std::list<std::shared_ptr<t_data>>	d_list;
+  T_pool				*pool;
   std::list<t_command>			orders;
   int					t_nbr;
   Named_pipe				*pipe;
@@ -33,7 +33,6 @@ private:
 private:
   Process(Process &);
   Process	&operator=(Process &);
-  Process();
 
   void		thread_control(int);
   t_command	order_nbr();
