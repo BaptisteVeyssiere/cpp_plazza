@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 19 11:11:25 2017 Nathan Scutari
-// Last update Thu Apr 27 16:47:40 2017 Nathan Scutari
+// Last update Fri Apr 28 14:22:12 2017 Nathan Scutari
 //
 
 #ifndef __PROCESS_HPP__
@@ -35,7 +35,7 @@ private:
   Process	&operator=(Process &);
   Process();
 
-  void		thread_control(void);
+  void		thread_control(int);
   t_command	order_nbr();
   int		orders_to_threads();
   void		assign_order(t_command);
