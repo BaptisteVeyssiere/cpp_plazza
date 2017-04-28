@@ -33,6 +33,7 @@ public:
   void	close_in(void);
   void	close_out(void);
   const std::string	&Get_pathin() const;
+  void	release();
 };
 
 #endif // __NAMED_PIPE_HPP__

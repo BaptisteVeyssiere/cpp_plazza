@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Thu Apr 27 00:21:57 2017 Baptiste Veyssiere
-// Last update Fri Apr 28 15:02:03 2017 Baptiste Veyssiere
+// Last update Fri Apr 28 15:31:50 2017 Baptiste Veyssiere
 //
 
 #ifndef __MAIN_PROCESS_HPP__
@@ -35,7 +35,7 @@ private:
 public:
   Main_Process(unsigned int);
   virtual ~Main_Process();
-  void	loop();
+  int	loop();
 
 private:
   void		Add_pipe(std::vector<Named_pipe>::iterator, unsigned int);

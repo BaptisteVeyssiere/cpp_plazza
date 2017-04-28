@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Fri Apr 28 15:08:04 2017 Baptiste Veyssiere
+// Last update Fri Apr 28 16:40:35 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
@@ -18,23 +18,34 @@ Main_Process::Main_Process(unsigned int nbr)
 
 Main_Process::~Main_Process() {}
 
-void	Main_Process::loop()
+int	Main_Process::loop()
 {
   Parser			parser;
   std::vector<t_command>	command_list;
   std::string			command;
 
   std::cout << QUESTION;
-  while (getline(std::cin, command))
+  try
     {
-      parser.parse(command, command_list);
-      this->process_command(command_list);
-      command.clear();
-      command_list.clear();
-      std::cout << QUESTION;
+      while (getline(std::cin, command))
+	{
+	  parser.parse(command, command_list);
+	  this->process_command(command_list);
+	  command.clear();
+	  command_list.clear();
+	  std::cout << QUESTION;
+	}
+      while (this->pipe_tab.size() > 0)
+	this->check_processes();
     }
-  while (this->pipe_tab.size() > 0)
-    this->check_processes();
+  catch (const std::exception &e)
+    {
+      std::cerr << "ERROR: " << e.what() << std::endl;
+      while (this->process_nbr > 0)
+	this->check_processes();
+      return (1);
+    }
+  return (0);
 }
 
 void	Main_Process::Add_pipe(std::vector<Named_pipe>::iterator it, unsigned int id)
@@ -71,13 +82,16 @@ void	Main_Process::check_processes()
   t_command	check = { "", Information::PHONE_NUMBER, 0 };
 
   for (std::vector<Named_pipe>::iterator it = this->pipe_tab.begin();
-       it != this->pipe_tab.end(); it++)
+       it != this->pipe_tab.end(); ++it)
     {
       *it >> check;
       if (check.file == "end")
 	{
-	  it = this->pipe_tab.erase(it) - 1;
+	  it->release();
+	  it = this->pipe_tab.erase(it);
 	  --this->process_nbr;
+	  if (this->pipe_tab.size() == 0)
+	    break;
 	}
       check.file = "";
     }

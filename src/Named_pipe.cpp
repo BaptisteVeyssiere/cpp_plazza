@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Fri Apr 28 15:08:58 2017 Baptiste Veyssiere
+// Last update Fri Apr 28 16:40:00 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -59,16 +59,20 @@ Named_pipe	&Named_pipe::operator=(const Named_pipe &other)
   return (*this);
 }
 
+void	Named_pipe::release()
+{
+  if (this->checkFifo(this->path_in))
+    std::remove(this->path_in.c_str());
+  if (this->checkFifo(this->path_out))
+    std::remove(this->path_out.c_str());
+}
+
 Named_pipe::~Named_pipe()
 {
   if (this->in.is_open())
     this->in.close();
   if (this->out.is_open())
     this->out.close();
-  if (this->checkFifo(this->path_in))
-    std::remove(this->path_in.c_str());
-  if (this->checkFifo(this->path_out))
-    std::remove(this->path_out.c_str());
 }
 
 const std::string	&Named_pipe::Get_pathin() const
@@ -132,16 +136,21 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
   int			info;
   std::stringstream	streamline;
   std::string		line;
+  std::streambuf	*pbuf;
+  std::streamsize	size;
 
+  if (!this->checkFifo(this->path_in))
+    return (*this);
+  pbuf = this->in.rdbuf();
+  size = pbuf->in_avail();
+  if (size == 0)
+    return (*this);
   getline(this->in, line);
-  if (this->in.gcount() > 0)
-    {
-      streamline << line;
-      streamline >> command.file;
-      streamline >> info;
-      command.information = static_cast<Information>(info);
-      streamline >> command.threads;
-      std::cout << "Receiving : file = " << command.file << ", threads = " << command.threads << std::endl;
-    }
+  streamline << line;
+  streamline >> command.file;
+  streamline >> info;
+  command.information = static_cast<Information>(info);
+  streamline >> command.threads;
+  std::cout << "Receiving : file = " << command.file << ", threads = " << command.threads << std::endl;
   return (*this);
 }
