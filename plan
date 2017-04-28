@@ -1,0 +1,12 @@
+Reconstruction:
+create renvoie un int qui est le numéro du flag du process
+on utilise son retour pour envoyer au bon process (pas forcement le dernier)
+On parcours le vecteur des Named_pipe, si on voie qu'il manque un numéro (grace au path_in || path_out), on le recréé, sinon, on en créé un à la fin
+
+Destruction:
+Avant chaque fois, avant de process une commande, on verifie chaque named_pipe pour vérifier que le process n'est pas fini (dans ce cas il renvoie une commande avec end en nom de 
+fichier)
+Si un process est fini, on erase le Named_pipe concerné
+
+Boucle de fin:
+A la fin, on boucle sur la commande de vérification de chaque process, jusqu'à ce que le nombre de named pipe soit égal à 0

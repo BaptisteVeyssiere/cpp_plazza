@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Thu Apr 27 19:09:20 2017 Baptiste Veyssiere
+// Last update Fri Apr 28 15:08:58 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -32,7 +32,6 @@ Named_pipe::Named_pipe(const std::string &path_i, const std::string &path_o, boo
     }
   this->path_in = path_i;
   this->path_out = path_o;
-  std::cout << "path_in = " << this->path_in << " & path_out = " << this->path_out << std::endl;
   this->in.close();
   this->out.close();
   if (order == true)
@@ -51,6 +50,15 @@ Named_pipe::Named_pipe(const Named_pipe &other)
   this->open_out();
 }
 
+Named_pipe	&Named_pipe::operator=(const Named_pipe &other)
+{
+  this->path_in = other.path_in;
+  this->path_out = other.path_out;
+  this->open_in();
+  this->open_out();
+  return (*this);
+}
+
 Named_pipe::~Named_pipe()
 {
   if (this->in.is_open())
@@ -61,6 +69,11 @@ Named_pipe::~Named_pipe()
     std::remove(this->path_in.c_str());
   if (this->checkFifo(this->path_out))
     std::remove(this->path_out.c_str());
+}
+
+const std::string	&Named_pipe::Get_pathin() const
+{
+  return (this->path_in);
 }
 
 bool	Named_pipe::checkFifo(const std::string &file) const
@@ -109,6 +122,7 @@ void	Named_pipe::close_out(void)
 
 Named_pipe	&Named_pipe::operator<<(const t_command &command)
 {
+  std::cout << "Sending : file = " << command.file << ", threads = " << command.threads << std::endl;
   this->out << command.file << " " << command.information << " " << command.threads << std::endl;
   return (*this);
 }
@@ -127,6 +141,7 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
       streamline >> info;
       command.information = static_cast<Information>(info);
       streamline >> command.threads;
+      std::cout << "Receiving : file = " << command.file << ", threads = " << command.threads << std::endl;
     }
   return (*this);
 }

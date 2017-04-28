@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Thu Apr 27 00:21:57 2017 Baptiste Veyssiere
-// Last update Thu Apr 27 00:32:56 2017 Baptiste Veyssiere
+// Last update Fri Apr 28 15:02:03 2017 Baptiste Veyssiere
 //
 
 #ifndef __MAIN_PROCESS_HPP__
@@ -38,9 +38,10 @@ public:
   void	loop();
 
 private:
-  void	Add_pipe();
-  void	create_new_process();
-  void	process_command(std::vector<t_command> &);
+  void		Add_pipe(std::vector<Named_pipe>::iterator, unsigned int);
+  unsigned int	create_new_process();
+  void		process_command(std::vector<t_command> &);
+  void		check_processes();
 };
 
 #endif // !__MAIN_PROCESS_HPP__

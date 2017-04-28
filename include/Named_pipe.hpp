@@ -20,12 +20,10 @@ private:
   std::string     path_in;
   std::string     path_out;
 
-private:
-  Named_pipe  &operator=(const Named_pipe &);
-
 public:
   Named_pipe(const std::string &, const std::string &, bool);
   Named_pipe(const Named_pipe &);
+  Named_pipe  &operator=(const Named_pipe &);
   virtual ~Named_pipe();
   Named_pipe	&operator<<(const t_command &);
   Named_pipe	&operator>>(t_command &);
@@ -34,6 +32,7 @@ public:
   void	open_out(void);
   void	close_in(void);
   void	close_out(void);
+  const std::string	&Get_pathin() const;
 };
 
 #endif // __NAMED_PIPE_HPP__
