@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Fri Apr 28 16:40:35 2017 Baptiste Veyssiere
+// Last update Fri Apr 28 18:00:59 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
@@ -23,17 +23,31 @@ int	Main_Process::loop()
   Parser			parser;
   std::vector<t_command>	command_list;
   std::string			command;
+  std::streambuf		*pbuf;
+  std::streamsize		size;
 
   std::cout << QUESTION;
+  std::cin.sync_with_stdio(false);
   try
     {
-      while (getline(std::cin, command))
+      while (this->process_nbr > 0)
 	{
-	  parser.parse(command, command_list);
-	  this->process_command(command_list);
-	  command.clear();
-	  command_list.clear();
-	  std::cout << QUESTION;
+	  pbuf = std::cin.rdbuf();
+	  size = pbuf->in_avail();
+	  if (size > 0)
+	    {
+	      if (getline(std::cin, command))
+		{
+		  parser.parse(command, command_list);
+		  this->process_command(command_list);
+		  command.clear();
+		  command_list.clear();
+		  std::cout << QUESTION;
+		}
+	      else
+		break;
+	    }
+	  this->check_processes();
 	}
       while (this->pipe_tab.size() > 0)
 	this->check_processes();
