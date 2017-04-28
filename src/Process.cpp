@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 19 11:21:23 2017 Nathan Scutari
-// Last update Thu Apr 27 19:09:36 2017 Baptiste Veyssiere
+// Last update Fri Apr 28 14:31:28 2017 Nathan Scutari
 //
 
 #include <iostream>
@@ -50,8 +50,7 @@ int	Process::orders_to_threads()
 {
   int		threads_running(0);
 
-  for (int i = 0 ; i < t_nbr ; ++i)
-    ++threads_running;
+  threads_running = order_nbr().threads;
   if (threads_running == t_nbr)
     return (0);
   else if (orders.size() > 0)
@@ -77,18 +76,28 @@ int	Process::orders_to_threads()
   return (0);
 }
 
-void	Process::thread_control(void)
+void	Process::thread_control(int id)
 {
   t_data	data;
   t_command	order = { "", Information::PHONE_NUMBER, 0 };
 
-  *pipe >> order;
-  if (order.file == "" && order.threads == 1)
-    *pipe << order_nbr();
-  else if (order.file != "" && order.threads == 0)
-    orders.push_back(order);
-  else if (orders_to_threads())
-    return ;
+  while (1)
+    {
+      order.file = "";
+      order.threads = 0;
+      *pipe >> order;
+      if (order.file == "" && order.threads == 1)
+	  *pipe << order_nbr();
+      else if (order.file != "" && order.threads == 0)
+	  orders.push_back(order);
+      else if (orders_to_threads())
+	{
+	  std::cout << "Timeout: Process with id: " << id << std::endl;
+	  order.file = "end";
+	  *pipe << order;
+	  return ;
+	}
+    }
 }
 
 int	Process::clone(int id)
@@ -109,7 +118,7 @@ int	Process::clone(int id)
 	  d_list.push_back(data);
 	  threads.push_back(std::make_unique<Thread>(d_list.back()));
 	}
-      thread_control();
+      thread_control(id);
       return (1);
     }
   return (0);
