@@ -12,7 +12,7 @@ class Mutex {
 
 private:
 
-  std::shared_ptr<std::mutex>    mutex;
+  std::mutex    mutex;
 
 public:
 
@@ -22,6 +22,8 @@ public:
   void    lock();
   bool    try_lock();
   void    unlock();
+
+  std::mutex  &getMutex();
 
 };
 

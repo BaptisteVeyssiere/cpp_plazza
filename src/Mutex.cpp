@@ -6,20 +6,24 @@
 
 
 Mutex::Mutex()
-  : mutex(std::make_shared<std::mutex>())
+  : mutex()
 {}
 
 Mutex::~Mutex() {
 }
 
 void Mutex::lock() {
-    mutex->lock();
+    mutex.lock();
 }
 
 bool Mutex::try_lock() {
-    return mutex->try_lock();
+    return mutex.try_lock();
 }
 
 void Mutex::unlock() {
-    mutex->unlock();
+    mutex.unlock();
+}
+
+std::mutex &Mutex::getMutex() {
+    return mutex;
 }
