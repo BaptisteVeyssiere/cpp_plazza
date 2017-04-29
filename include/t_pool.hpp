@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Fri Apr 28 17:44:20 2017 Nathan Scutari
-// Last update Sat Apr 29 18:14:57 2017 Nathan Scutari
+// Last update Sat Apr 29 19:07:51 2017 Nathan Scutari
 //
 
 #ifndef __T_POOL__
@@ -37,7 +37,7 @@ public:
 public:
   int	getRunningThreadsNbr();
   void	sendOrderToThread(t_command &);
-  int	getFinishedOrder(std::vector<std::string> &);
+  int	getFinishedOrder(t_command &);
 };
 
 #endif // !__T_POOL__

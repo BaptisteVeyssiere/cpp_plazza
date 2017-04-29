@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Fri Apr 28 17:46:40 2017 Nathan Scutari
-// Last update Sat Apr 29 18:21:15 2017 Nathan Scutari
+// Last update Sat Apr 29 19:07:07 2017 Nathan Scutari
 //
 
 #include "t_pool.hpp"
@@ -28,14 +28,14 @@ T_pool::T_pool(int t_nbr)
 T_pool::~T_pool()
 {}
 
-int	T_pool::getFinishedOrder(std::vector<std::string> &result)
+int	T_pool::getFinishedOrder(t_command &result)
 {
   for (std::list<std::shared_ptr<t_data>>::iterator it = d_list.begin() ; it != d_list.end() ; ++it)
     {
       if ((*it)->end == 1)
 	{
 	  (*it)->end = 0;
-	  result = (*it)->result;
+	  result = (*it)->command;
 	  return (1);
 	}
     }
