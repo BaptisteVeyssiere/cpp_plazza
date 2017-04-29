@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sat Apr 29 19:11:32 2017 Baptiste Veyssiere
+// Last update Sat Apr 29 21:19:04 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
@@ -95,6 +95,7 @@ void	Main_Process::check_processes()
 {
   t_command			check = { "", Information::PHONE_NUMBER, 0, {} };
   std::vector<std::string>	info { "PHONE_NUMBER", "EMAIL_ADDRESS", "IP_ADDRESS" };
+  static int			ok = 0;
 
   for (std::vector<Named_pipe>::iterator it = this->pipe_tab.begin();
        it != this->pipe_tab.end(); ++it)
@@ -112,6 +113,8 @@ void	Main_Process::check_processes()
 	{
 	  std::cout << check.file << " " << info[check.information] << ":" << std::endl;
 	  std::for_each(check.data.begin(), check.data.end(), [&](const std::string &str) { std::cout << str << std::endl; });
+	  ++ok;
+	  std::cout << ok << " commands received" << std::endl;
 	}
       check.file = "";
     }
@@ -132,12 +135,18 @@ void	Main_Process::process_command(std::vector<t_command> &command_list)
       min = this->thread_nbr * 2;
       this->check_processes();
       for (unsigned int i = 0; i < this->process_nbr; i++)
+	this->pipe_tab[i] << thread_request;
+      for (unsigned int i = 0; i < this->process_nbr; i++)
 	{
 	  thread_request.file = "";
 	  thread_request.threads = 1;
-	  this->pipe_tab[i] << thread_request;
+	  thread_request.data.clear();
+	  // this->pipe_tab[i] << thread_request;
 	  while (thread_request.file != "ok")
-	    this->pipe_tab[i] >> thread_request;
+	    {
+	      this->pipe_tab[i] >> thread_request;
+	      std::cout << "Nbr of process active: " << this->process_nbr << std::endl;
+	    }
 	  if (thread_request.threads < min)
 	    {
 	      min = thread_request.threads;

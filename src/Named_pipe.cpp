@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Sat Apr 29 18:59:03 2017 Baptiste Veyssiere
+// Last update Sat Apr 29 21:20:00 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -83,6 +83,9 @@ bool	Named_pipe::checkFifo(const std::string &file) const
   struct stat	statstruct;
   int		result;
 
+  //std::cout << "stat with file " << file << std::endl;
+  if (file.empty())
+    return (false);
   result = stat(file.c_str(), &statstruct);
   return (result == -1 ? false : true);
 }
@@ -126,8 +129,12 @@ Named_pipe	&Named_pipe::operator<<(const t_command &command)
   for (unsigned int i = 0; i < command.data.size(); i++)
     std::cout << " " << command.data[i];
   std::cout << std::endl;
-  this->out << command.file << " " << command.information << " " << command.threads << " ";
-  std::for_each(command.data.begin(), command.data.end(), [&](const std::string &str) { this->out << str << " "; });
+  this->out << command.file << " " << command.information << " " << command.threads;
+  if (command.data.size() > 0)
+    {
+      this->out << " ";
+      std::for_each(command.data.begin(), command.data.end(), [&](const std::string &str) { this->out << str << " "; });
+    }
   this->out << std::endl;
   return (*this);
 }
@@ -141,6 +148,7 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
   std::streamsize	size;
   std::string		str;
 
+  command.data.clear();
   if (!this->checkFifo(this->path_in))
     return (*this);
   pbuf = this->in.rdbuf();
@@ -148,6 +156,8 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
   if (size == 0)
     return (*this);
   getline(this->in, line);
+  if (line.empty())
+    return (*this);
   streamline << line;
   if (streamline.str()[0] == ' ')
     command.file = "";
@@ -167,6 +177,6 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
   std::cout << "Receiving : file = " << command.file << ", threads = " << command.threads << ", data = ";
   for (unsigned int i = 0; i < command.data.size(); i++)
     std::cout << command.data[i] << "|";
-  std::cout << std::endl;
+  std::cout << "Via command " << line << std::endl;
   return (*this);
 }
