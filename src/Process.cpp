@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 19 11:21:23 2017 Nathan Scutari
-// Last update Sat Apr 29 19:07:37 2017 Nathan Scutari
+// Last update Sat Apr 29 19:22:34 2017 Nathan Scutari
 //
 
 #include <iostream>
@@ -26,7 +26,7 @@ t_command	Process::order_nbr()
   t_command	order = { "ok", Information::PHONE_NUMBER, 0, {} };
 
   order.threads = static_cast<unsigned int>(orders.size());
-  order.threads = pool->getRunningThreadsNbr();
+  order.threads += pool->getRunningThreadsNbr();
   return (order);
 }
 
