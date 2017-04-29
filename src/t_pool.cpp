@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Fri Apr 28 17:46:40 2017 Nathan Scutari
-// Last update Sat Apr 29 17:04:36 2017 Nathan Scutari
+// Last update Sat Apr 29 17:31:19 2017 Nathan Scutari
 //
 
 #include "t_pool.hpp"
@@ -24,6 +24,7 @@ T_pool::T_pool(int t_nbr)
       data->running = 0;
       mut = std::make_shared<Mutex>();
       cvar = std::make_shared<CondVar>(*mut);
+      data->condvar = cvar;
       d_list.push_back(data);
       threads.push_back(std::make_unique<Thread>(d_list.back()));
     }
