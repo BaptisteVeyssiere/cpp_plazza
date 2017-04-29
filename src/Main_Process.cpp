@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sat Apr 29 20:36:07 2017 Baptiste Veyssiere
+// Last update Sat Apr 29 21:19:04 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
@@ -135,10 +135,13 @@ void	Main_Process::process_command(std::vector<t_command> &command_list)
       min = this->thread_nbr * 2;
       this->check_processes();
       for (unsigned int i = 0; i < this->process_nbr; i++)
+	this->pipe_tab[i] << thread_request;
+      for (unsigned int i = 0; i < this->process_nbr; i++)
 	{
 	  thread_request.file = "";
 	  thread_request.threads = 1;
-	  this->pipe_tab[i] << thread_request;
+	  thread_request.data.clear();
+	  // this->pipe_tab[i] << thread_request;
 	  while (thread_request.file != "ok")
 	    {
 	      this->pipe_tab[i] >> thread_request;
