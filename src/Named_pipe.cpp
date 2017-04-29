@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Sat Apr 29 21:20:00 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 00:21:57 2017 ilyas semmaoui
 //
 
 #include <iostream>
@@ -132,8 +132,7 @@ Named_pipe	&Named_pipe::operator<<(const t_command &command)
   this->out << command.file << " " << command.information << " " << command.threads;
   if (command.data.size() > 0)
     {
-      this->out << " ";
-      std::for_each(command.data.begin(), command.data.end(), [&](const std::string &str) { this->out << str << " "; });
+      std::for_each(command.data.begin(), command.data.end(), [&](const std::string &str) { this->out << " " << str; });
     }
   this->out << std::endl;
   return (*this);
@@ -156,6 +155,7 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
   if (size == 0)
     return (*this);
   getline(this->in, line);
+  std::cout << line << std::endl;
   if (line.empty())
     return (*this);
   streamline << line;

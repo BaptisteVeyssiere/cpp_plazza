@@ -104,7 +104,6 @@ void Thread::mainLoop(std::shared_ptr<t_data> data) {
         }
         data->running = 1;
         data->ready = 0;
-	//std::cout << "File: " << data->command.file << std::endl;
         std::string mem = getFileData(data->command.file);
         if (mem != "") {
 	  std::vector<std::string> fileData;

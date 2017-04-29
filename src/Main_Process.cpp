@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sat Apr 29 21:19:04 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 00:10:17 2017 ilyas semmaoui
 //
 
 #include "Main_Process.hpp"
@@ -97,27 +97,36 @@ void	Main_Process::check_processes()
   std::vector<std::string>	info { "PHONE_NUMBER", "EMAIL_ADDRESS", "IP_ADDRESS" };
   static int			ok = 0;
 
-  for (std::vector<Named_pipe>::iterator it = this->pipe_tab.begin();
-       it != this->pipe_tab.end(); ++it)
+  for (int i = 0; i < static_cast<int>(this->pipe_tab.size());)
     {
-      *it >> check;
+      // std::cout << "i : " << i << " / " << this->pipe_tab[i].Get_pathin() << std::endl;
+      this->pipe_tab[i] >> check;
       if (check.file == "end")
 	{
-	  it->release();
-	  it = this->pipe_tab.erase(it);
+	  this->pipe_tab[i] << check;
+	  this->pipe_tab[i].release();
+	  this->pipe_tab.erase(this->pipe_tab.begin() + i);
+	  std::cout << this->pipe_tab[i].Get_pathin() << std::endl;
 	  --this->process_nbr;
-	  if (this->pipe_tab.size() == 0)
+	  if (this->pipe_tab.size() < 1 || this->process_nbr < 1)
 	    break;
+	  std::cout << "Nbr of processes " << this->process_nbr << " " << this->pipe_tab.size() << std::endl;
 	}
-      else if (check.data.size() > 0 || check.file != "")
+      else
 	{
-	  std::cout << check.file << " " << info[check.information] << ":" << std::endl;
-	  std::for_each(check.data.begin(), check.data.end(), [&](const std::string &str) { std::cout << str << std::endl; });
-	  ++ok;
-	  std::cout << ok << " commands received" << std::endl;
+	  if (check.data.size() > 0 || check.file != "")
+	    {
+	      std::cout << check.file << " " << info[check.information] << ":" << std::endl;
+	      std::for_each(check.data.begin(), check.data.end(), [&](const std::string &str) { std::cout << str << std::endl; });
+	      ++ok;
+	      std::cout << ok << " commands received" << std::endl;
+	    }
+	  ++i;
 	}
       check.file = "";
     }
+  // std::cout << this->process_nbr << std::endl;
+  // std::cout << "OUT" << std::endl;
 }
 
 void	Main_Process::process_command(std::vector<t_command> &command_list)
@@ -131,21 +140,28 @@ void	Main_Process::process_command(std::vector<t_command> &command_list)
        it != command_list.end();
        it++)
     {
-
       min = this->thread_nbr * 2;
       this->check_processes();
-      for (unsigned int i = 0; i < this->process_nbr; i++)
-	this->pipe_tab[i] << thread_request;
-      for (unsigned int i = 0; i < this->process_nbr; i++)
+      for (int i = 0; i < static_cast<int>(this->process_nbr); i++)
 	{
 	  thread_request.file = "";
 	  thread_request.threads = 1;
 	  thread_request.data.clear();
-	  // this->pipe_tab[i] << thread_request;
-	  while (thread_request.file != "ok")
+	  this->pipe_tab[i] << thread_request;
+	  while (thread_request.file != "ok" && thread_request.file != "end")
 	    {
 	      this->pipe_tab[i] >> thread_request;
 	      std::cout << "Nbr of process active: " << this->process_nbr << std::endl;
+	    }
+	  if (thread_request.file == "end")
+	    {
+	      this->pipe_tab[i] << thread_request;
+	      this->pipe_tab[i].release();
+	      this->pipe_tab.erase(this->pipe_tab.begin() + i);
+	      --this->process_nbr;
+	      --i;
+	      std::cout << "Nbr of process " << this->process_nbr << std::endl;
+	      continue;
 	    }
 	  if (thread_request.threads < min)
 	    {
