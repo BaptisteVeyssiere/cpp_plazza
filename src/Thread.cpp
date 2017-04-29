@@ -82,7 +82,7 @@ std::string Thread::getFileData(std::string const& path)
     if (file.is_open()) {
         std::streampos size = file.tellg();
         if (!file.fail() && size > 0) {
-            std::vector<char> fileMem(static_cast<unsigned long>(size));
+            std::vector<char> fileMem(static_cast<unsigned long>(size) + 1);
             file.seekg(0, std::ios::beg);
             if (!file.fail()) {
                 file.read(fileMem.data(), static_cast<std::streamsize>(size));
