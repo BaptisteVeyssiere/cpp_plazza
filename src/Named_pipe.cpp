@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Fri Apr 28 18:11:22 2017 Baptiste Veyssiere
+// Last update Sat Apr 29 14:52:21 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -21,14 +21,14 @@ Named_pipe::Named_pipe(const std::string &path_i, const std::string &path_o, boo
       std::cerr << "Error_in: " << std::strerror(errno) << " (" << path_i << ")" << std::endl;
       std::remove(this->path_in.c_str());
       std::remove(this->path_out.c_str());
-      throw std::exception();
+      throw std::runtime_error("Error in the creation of " + path_i);
     }
   if (this->checkFifo(path_o) == false && mkfifo(path_o.c_str(), 0666) == -1)
     {
       std::cerr << "Error out: " << std::strerror(errno) << " (" << path_o << ")" << std::endl;
       std::remove(this->path_in.c_str());
       std::remove(this->path_out.c_str());
-      throw std::exception();
+      throw std::runtime_error("Error in the creation of " + path_o);
     }
   this->path_in = path_i;
   this->path_out = path_o;
@@ -94,10 +94,9 @@ void	Named_pipe::open_in(void)
   this->in.open(this->path_in, std::ifstream::in);
   if (!this->in.is_open())
     {
-      std::cerr << "In isn't open" << std::endl;
       std::remove(this->path_in.c_str());
       std::remove(this->path_out.c_str());
-      throw std::exception();
+      throw std::runtime_error("Impossible to open " + this->path_in);
     }
 }
 
@@ -106,10 +105,9 @@ void	Named_pipe::open_out(void)
   this->out.open(this->path_out, std::ofstream::out);
   if (!this->out.is_open())
     {
-      std::cerr << "Out isn't open" << std::endl;
       std::remove(this->path_in.c_str());
       std::remove(this->path_out.c_str());
-      throw std::exception();
+      throw std::runtime_error("Impossible to open " + this->path_out);
     }
 }
 
@@ -126,8 +124,13 @@ void	Named_pipe::close_out(void)
 
 Named_pipe	&Named_pipe::operator<<(const t_command &command)
 {
-  std::cout << "Sending : file = " << command.file << ", threads = " << command.threads << std::endl;
-  this->out << command.file << " " << command.information << " " << command.threads << std::endl;
+  std::cout << "Sending : file = " << command.file << ", threads = " << command.threads << ", data = ";
+  for (unsigned int i = 0; i < command.data.size(); i++)
+    std::cout << " " << command.data[i];
+  std::cout << std::endl;
+  this->out << command.file << " " << command.information << " " << command.threads;
+  std::for_each(command.data.begin(), command.data.end(), [&](const std::string &str) { this->out << str << " "; });
+  this->out << std::endl;
   return (*this);
 }
 
@@ -138,6 +141,7 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
   std::string		line;
   std::streambuf	*pbuf;
   std::streamsize	size;
+  std::string		str;
 
   if (!this->checkFifo(this->path_in))
     return (*this);
@@ -154,6 +158,15 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
   streamline >> info;
   command.information = static_cast<Information>(info);
   streamline >> command.threads;
-  std::cout << "Receiving : file = " << command.file << ", threads = " << command.threads << std::endl;
+  streamline >> str;
+  while (str != "")
+    {
+      command.data.push_back(str);
+      streamline >> str;
+    }
+  std::cout << "Receiving : file = " << command.file << ", threads = " << command.threads << ", data = ";
+  for (unsigned int i = 0; i < command.data.size(); i++)
+    std::cout << command.data[i] << "|";
+  std::cout << std::endl;
   return (*this);
 }

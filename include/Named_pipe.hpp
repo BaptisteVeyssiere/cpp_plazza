@@ -5,12 +5,13 @@
 #ifndef __NAMED_PIPE_HPP__
 # define __NAMED_PIPE_HPP__
 
-#include <string>
-#include <fstream>
-#include <sstream>
-#include "sys/stat.h"
-#include "sys/types.h"
-#include "command.hpp"
+# include <string>
+# include <fstream>
+# include <sstream>
+# include <algorithm>
+# include "sys/stat.h"
+# include "sys/types.h"
+# include "command.hpp"
 
 class   Named_pipe
 {

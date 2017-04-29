@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Fri Apr 28 18:00:59 2017 Baptiste Veyssiere
+// Last update Sat Apr 29 14:29:50 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
@@ -93,7 +93,7 @@ unsigned int	Main_Process::create_new_process()
 
 void	Main_Process::check_processes()
 {
-  t_command	check = { "", Information::PHONE_NUMBER, 0 };
+  t_command	check = { "", Information::PHONE_NUMBER, 0, {} };
 
   for (std::vector<Named_pipe>::iterator it = this->pipe_tab.begin();
        it != this->pipe_tab.end(); ++it)
@@ -113,7 +113,7 @@ void	Main_Process::check_processes()
 
 void	Main_Process::process_command(std::vector<t_command> &command_list)
 {
-  t_command	thread_request = { "", Information::PHONE_NUMBER, 1 };
+  t_command	thread_request = { "", Information::PHONE_NUMBER, 1, {} };
   unsigned int	min;
   unsigned int	thread_it;
   unsigned int	id;

@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 19 11:21:23 2017 Nathan Scutari
-// Last update Fri Apr 28 18:03:30 2017 Nathan Scutari
+// Last update Sat Apr 29 14:28:56 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -23,7 +23,7 @@ Process::Process(int thread_nbr)
 
 t_command	Process::order_nbr()
 {
-  t_command	order = { "ok", Information::PHONE_NUMBER, 0 };
+  t_command	order = { "ok", Information::PHONE_NUMBER, 0, {} };
 
   order.threads = static_cast<unsigned int>(orders.size());
   order.threads = pool->getRunningThreadsNbr();
@@ -68,7 +68,7 @@ int	Process::orders_to_threads()
 void	Process::thread_control(int id)
 {
   t_data	data;
-  t_command	order = { "", Information::PHONE_NUMBER, 0 };
+  t_command	order = { "", Information::PHONE_NUMBER, 0, {} };
 
   while (1)
     {

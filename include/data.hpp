@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 26 17:14:58 2017 Nathan Scutari
-// Last update Thu Apr 27 15:40:21 2017 Nathan Scutari
+// Last update Sat Apr 29 14:27:38 2017 Baptiste Veyssiere
 //
 
 #ifndef __DATA_HPP__
@@ -17,7 +17,7 @@ typedef struct	s_data
 {
   bool		ready = false;
   bool		running = false;
-  t_command	command = { "", Information::PHONE_NUMBER, 0 };
+  t_command	command = { "", Information::PHONE_NUMBER, 0, {} };
 }		t_data;
 
 #endif // __DATA_HPP__
