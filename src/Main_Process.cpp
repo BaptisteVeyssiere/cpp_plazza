@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sat Apr 29 18:59:33 2017 Baptiste Veyssiere
+// Last update Sat Apr 29 19:11:32 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
@@ -93,7 +93,8 @@ unsigned int	Main_Process::create_new_process()
 
 void	Main_Process::check_processes()
 {
-  t_command	check = { "", Information::PHONE_NUMBER, 0, {} };
+  t_command			check = { "", Information::PHONE_NUMBER, 0, {} };
+  std::vector<std::string>	info { "PHONE_NUMBER", "EMAIL_ADDRESS", "IP_ADDRESS" };
 
   for (std::vector<Named_pipe>::iterator it = this->pipe_tab.begin();
        it != this->pipe_tab.end(); ++it)
@@ -107,9 +108,9 @@ void	Main_Process::check_processes()
 	  if (this->pipe_tab.size() == 0)
 	    break;
 	}
-      else if (check.data.size() > 0)
+      else if (check.data.size() > 0 || check.file != "")
 	{
-	  std::cout << check.file << ":" << std::endl;
+	  std::cout << check.file << " " << info[check.information] << ":" << std::endl;
 	  std::for_each(check.data.begin(), check.data.end(), [&](const std::string &str) { std::cout << str << std::endl; });
 	}
       check.file = "";

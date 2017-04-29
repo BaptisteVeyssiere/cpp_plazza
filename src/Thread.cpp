@@ -104,14 +104,14 @@ void Thread::mainLoop(std::shared_ptr<t_data> data) {
         }
         data->running = 1;
         data->ready = 0;
-	std::cout << "File: " << data->command.file << std::endl;
+	//std::cout << "File: " << data->command.file << std::endl;
         std::string mem = getFileData(data->command.file);
         if (mem != "") {
-            std::vector<std::string> fileData;
-            findSomething(fileData, mem, data->command.information);
-            std::for_each(fileData.begin(), fileData.end(),
-			  [&](std::string &val) { std::replace(val.begin(), val.end(), ' ', ':'); });
-	    data->result = fileData;
+	  std::vector<std::string> fileData;
+	  findSomething(fileData, mem, data->command.information);
+	  std::for_each(fileData.begin(), fileData.end(),
+			[&](std::string &val) { std::replace(val.begin(), val.end(), ' ', ':'); });
+	  data->command.data = fileData;
         }
 	data->end = 1;
         data->running = 0;
