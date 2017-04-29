@@ -8,7 +8,7 @@
 CondVar::CondVar() {
 }
 
-CondVar::CondVar(Mutex & mut, bool &_ready) : lck(mut.getMutex()), cond(), ready(_ready) {
+CondVar::CondVar(Mutex & mut) : lck(mut.getMutex()), cond() {
 
 }
 
@@ -29,7 +29,7 @@ void CondVar::unlock() {
 }
 
 void CondVar::wait() {
-  cond.wait(lck, [](){ return ready; });
+  cond.wait(lck);
 }
 
 void CondVar::notify_one() noexcept {
