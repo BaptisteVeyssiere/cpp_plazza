@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Sat Apr 29 16:05:12 2017 Baptiste Veyssiere
+// Last update Sat Apr 29 18:10:54 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -126,7 +126,7 @@ Named_pipe	&Named_pipe::operator<<(const t_command &command)
   for (unsigned int i = 0; i < command.data.size(); i++)
     std::cout << " " << command.data[i];
   std::cout << std::endl;
-  this->out << command.file << " " << command.information << " " << command.threads;
+  this->out << command.file << " " << command.information << " " << command.threads << " ";
   std::for_each(command.data.begin(), command.data.end(), [&](const std::string &str) { this->out << str << " "; });
   this->out << std::endl;
   return (*this);
@@ -162,6 +162,7 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
       command.data.push_back(str);
       streamline >> str;
     }
+  std::for_each(command.data.begin(), command.data.end(), [&](std::string &result) { std::replace(result.begin(), result.end(), ':', ' '); });
   std::cout << "Receiving : file = " << command.file << ", threads = " << command.threads << ", data = ";
   for (unsigned int i = 0; i < command.data.size(); i++)
     std::cout << command.data[i] << "|";
