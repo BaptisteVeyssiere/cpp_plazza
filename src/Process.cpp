@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 19 11:21:23 2017 Nathan Scutari
-// Last update Sat Apr 29 19:43:42 2017 Nathan Scutari
+// Last update Sat Apr 29 21:43:22 2017 Nathan Scutari
 //
 
 #include <iostream>
@@ -85,7 +85,13 @@ void	Process::thread_control(int id)
 	  std::cout << "Timeout: Process with id: " << id << std::endl;
 	  order.file = "end";
 	  *pipe << order;
-	  return ;
+	  order.file = "";
+	  while (1)
+	    {
+	      *pipe >> order;
+	      if (order.file == "end")
+		return ;
+	    }
 	}
       if (pool->getFinishedOrder(order))
 	*pipe << order;
