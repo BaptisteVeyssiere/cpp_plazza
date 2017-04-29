@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 19 11:21:23 2017 Nathan Scutari
-// Last update Sat Apr 29 21:43:22 2017 Nathan Scutari
+// Last update Sat Apr 29 21:52:16 2017 Nathan Scutari
 //
 
 #include <iostream>
@@ -39,7 +39,7 @@ int	Process::orders_to_threads()
 {
   int		threads_running(0);
 
-  threads_running = order_nbr().threads;
+  threads_running = pool->getRunningThreadsNbr();
   if (threads_running >= t_nbr)
     return (0);
   else if (orders.size() > 0)
