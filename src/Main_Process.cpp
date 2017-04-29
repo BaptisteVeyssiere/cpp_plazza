@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sat Apr 29 20:34:40 2017 Baptiste Veyssiere
+// Last update Sat Apr 29 20:36:07 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
@@ -142,7 +142,7 @@ void	Main_Process::process_command(std::vector<t_command> &command_list)
 	  while (thread_request.file != "ok")
 	    {
 	      this->pipe_tab[i] >> thread_request;
-	      std::cout << "Nbr of threads active: " << this->process_nbr << std::endl;
+	      std::cout << "Nbr of process active: " << this->process_nbr << std::endl;
 	    }
 	  if (thread_request.threads < min)
 	    {
