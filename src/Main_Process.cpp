@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sat Apr 29 19:53:31 2017 Baptiste Veyssiere
+// Last update Sat Apr 29 20:03:45 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
@@ -144,7 +144,6 @@ void	Main_Process::process_command(std::vector<t_command> &command_list)
 	      thread_it = i;
 	    }
 	}
-      std::cout << this->thread_nbr * 2 << std::endl;
       if (min < (this->thread_nbr * 2))
 	this->pipe_tab[thread_it] << *it;
       else
