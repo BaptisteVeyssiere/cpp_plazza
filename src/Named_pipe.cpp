@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Sat Apr 29 20:03:34 2017 Baptiste Veyssiere
+// Last update Sat Apr 29 20:15:58 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -83,7 +83,7 @@ bool	Named_pipe::checkFifo(const std::string &file) const
   struct stat	statstruct;
   int		result;
 
-  std::cout << "stat with file " << file << std::endl;
+  //std::cout << "stat with file " << file << std::endl;
   result = stat(file.c_str(), &statstruct);
   return (result == -1 ? false : true);
 }

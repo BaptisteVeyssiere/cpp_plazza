@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sat Apr 29 20:03:45 2017 Baptiste Veyssiere
+// Last update Sat Apr 29 20:17:06 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
@@ -95,6 +95,7 @@ void	Main_Process::check_processes()
 {
   t_command			check = { "", Information::PHONE_NUMBER, 0, {} };
   std::vector<std::string>	info { "PHONE_NUMBER", "EMAIL_ADDRESS", "IP_ADDRESS" };
+  static int			ok = 0;
 
   for (std::vector<Named_pipe>::iterator it = this->pipe_tab.begin();
        it != this->pipe_tab.end(); ++it)
@@ -112,6 +113,8 @@ void	Main_Process::check_processes()
 	{
 	  std::cout << check.file << " " << info[check.information] << ":" << std::endl;
 	  std::for_each(check.data.begin(), check.data.end(), [&](const std::string &str) { std::cout << str << std::endl; });
+	  ++ok;
+	  std::cout << ok << " commands received" << std::endl;
 	}
       check.file = "";
     }
