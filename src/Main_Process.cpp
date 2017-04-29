@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sat Apr 29 14:29:50 2017 Baptiste Veyssiere
+// Last update Sat Apr 29 18:59:33 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
@@ -106,6 +106,11 @@ void	Main_Process::check_processes()
 	  --this->process_nbr;
 	  if (this->pipe_tab.size() == 0)
 	    break;
+	}
+      else if (check.data.size() > 0)
+	{
+	  std::cout << check.file << ":" << std::endl;
+	  std::for_each(check.data.begin(), check.data.end(), [&](const std::string &str) { std::cout << str << std::endl; });
 	}
       check.file = "";
     }
