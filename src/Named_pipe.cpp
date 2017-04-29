@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Sat Apr 29 18:59:03 2017 Baptiste Veyssiere
+// Last update Sat Apr 29 19:54:02 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -141,6 +141,7 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
   std::streamsize	size;
   std::string		str;
 
+  command.data.clear();
   if (!this->checkFifo(this->path_in))
     return (*this);
   pbuf = this->in.rdbuf();
