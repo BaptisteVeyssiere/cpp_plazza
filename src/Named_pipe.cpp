@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Sat Apr 29 14:52:21 2017 Baptiste Veyssiere
+// Last update Sat Apr 29 16:05:12 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -16,16 +16,14 @@
 Named_pipe::Named_pipe(const std::string &path_i, const std::string &path_o, bool order)
   : in(""), out(""), path_in(path_i), path_out(path_o)
 {
-  if (this->checkFifo(path_i) == false && mkfifo(path_i.c_str(), 0666) == -1)
+  if (this->checkFifo(path_i) == false && mkfifo(path_i.c_str(), 0666) == -1 && errno != EEXIST)
     {
-      std::cerr << "Error_in: " << std::strerror(errno) << " (" << path_i << ")" << std::endl;
       std::remove(this->path_in.c_str());
       std::remove(this->path_out.c_str());
       throw std::runtime_error("Error in the creation of " + path_i);
     }
-  if (this->checkFifo(path_o) == false && mkfifo(path_o.c_str(), 0666) == -1)
+  if (this->checkFifo(path_o) == false && mkfifo(path_o.c_str(), 0666) == -1 && errno != EEXIST)
     {
-      std::cerr << "Error out: " << std::strerror(errno) << " (" << path_o << ")" << std::endl;
       std::remove(this->path_in.c_str());
       std::remove(this->path_out.c_str());
       throw std::runtime_error("Error in the creation of " + path_o);
