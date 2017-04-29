@@ -5,9 +5,6 @@
 #include "CondVar.hpp"
 
 
-CondVar::CondVar() {
-}
-
 CondVar::CondVar(Mutex & mut) : lck(mut.getMutex()), cond() {
 
 }

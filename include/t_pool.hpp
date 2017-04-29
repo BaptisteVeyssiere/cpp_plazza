@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Fri Apr 28 17:44:20 2017 Nathan Scutari
-// Last update Fri Apr 28 18:26:16 2017 Nathan Scutari
+// Last update Sat Apr 29 16:15:56 2017 Nathan Scutari
 //
 
 #ifndef __T_POOL__
@@ -15,12 +15,16 @@
 #include "Thread.hpp"
 #include "command.hpp"
 #include "data.hpp"
+#include "CondVar.hpp"
+#include "Mutex.hpp"
 
 class T_pool
 {
 private:
   std::list<std::unique_ptr<Thread>>	threads;
   std::list<std::shared_ptr<t_data>>	d_list;
+  std::list<std::shared_ptr<Mutex>>	mutex;
+  std::list<std::shared_ptr<CondVar>>	condvar;
 
 private:
   T_pool(T_pool &);

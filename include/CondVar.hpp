@@ -16,11 +16,10 @@ private:
 
   std::unique_lock<std::mutex>  lck;
   std::condition_variable       cond;
-  bool                          ready;
 
 public:
 
-  CondVar(Mutex &mut, bool &_ready);
+  CondVar(Mutex &mut);
   ~CondVar();
 
   void lock();
@@ -33,11 +32,6 @@ public:
 
   void notify_one() noexcept ;
   void notify_all() noexcept ;
-
-private:
-
-  CondVar();
-
 };
 
 
