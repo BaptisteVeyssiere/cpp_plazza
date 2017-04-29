@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Sat Apr 29 18:10:54 2017 Baptiste Veyssiere
+// Last update Sat Apr 29 18:59:03 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -160,6 +160,7 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
   while (str != "")
     {
       command.data.push_back(str);
+      str.clear();
       streamline >> str;
     }
   std::for_each(command.data.begin(), command.data.end(), [&](std::string &result) { std::replace(result.begin(), result.end(), ':', ' '); });
