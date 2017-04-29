@@ -96,11 +96,11 @@ std::string Thread::getFileData(std::string const& path)
     std::cerr << "Something went wrong with the given file : " << path << std::endl;
     return (std::string(""));
 }
-
+#include <stdexcept>
 void Thread::mainLoop(std::shared_ptr<t_data> data) {
     while (1) {
         while (!data->ready) {
-            std::this_thread::yield();
+	  std::this_thread::yield();
         }
         data->running = 1;
         data->ready = 0;
@@ -110,8 +110,10 @@ void Thread::mainLoop(std::shared_ptr<t_data> data) {
             std::vector<std::string> fileData;
             findSomething(fileData, mem, data->command.information);
             std::for_each(fileData.begin(), fileData.end(),
-                          [&](std::string &val) { std::cout << val << std::endl; });
+			  [&](std::string &val) { std::replace(val.begin(), val.end(), ' ', ':'); });
+	    data->result = fileData;
         }
+	data->end = 1;
         data->running = 0;
     }
 }
