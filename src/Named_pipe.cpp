@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Sat Apr 29 20:54:48 2017 Baptiste Veyssiere
+// Last update Sat Apr 29 20:59:42 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -150,6 +150,10 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
   if (size == 0)
     return (*this);
   getline(this->in, line);
+  if (line.empty())
+    {
+      std::cout << "EMPTY" << std::endl;
+    }
   streamline << line;
   if (streamline.str()[0] == ' ')
     command.file = "";
