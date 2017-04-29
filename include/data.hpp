@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 26 17:14:58 2017 Nathan Scutari
-// Last update Sat Apr 29 17:31:37 2017 Nathan Scutari
+// Last update Sat Apr 29 18:06:31 2017 Nathan Scutari
 //
 
 #ifndef __DATA_HPP__
@@ -19,12 +19,12 @@ typedef struct	s_data
 {
   std::atomic<int>	ready;
   std::atomic<int>	running;
+  std::atomic<int>	end;
   t_command	command = { "", Information::PHONE_NUMBER, 0, {} };
   std::vector<std::string>	result;
-  std::shared_ptr<CondVar>	condvar = NULL;
 
   s_data()
-    : ready(false), running(false), result()
+    : ready(false), running(false), end(false), result()
   {}
 }		t_data;
 

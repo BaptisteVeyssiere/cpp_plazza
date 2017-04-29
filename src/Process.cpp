@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 19 11:21:23 2017 Nathan Scutari
-// Last update Sat Apr 29 17:18:07 2017 Nathan Scutari
+// Last update Sat Apr 29 18:22:41 2017 Nathan Scutari
 //
 
 #include <iostream>
@@ -67,8 +67,9 @@ int	Process::orders_to_threads()
 
 void	Process::thread_control(int id)
 {
-  t_data	data;
-  t_command	order = { "", Information::PHONE_NUMBER, 0, {} };
+  t_data			data;
+  t_command			order = { "", Information::PHONE_NUMBER, 0, {} };
+  std::vector<std::string>	vec;
 
   while (1)
     {
@@ -85,6 +86,11 @@ void	Process::thread_control(int id)
 	  order.file = "end";
 	  *pipe << order;
 	  return ;
+	}
+      if (pool->getFinishedOrder(vec))
+	{
+	  order.data = vec;
+	  *pipe << order;
 	}
     }
 }
