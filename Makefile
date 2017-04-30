@@ -11,7 +11,7 @@ NAME	= plazza
 
 RM	= rm -f
 
-CXX	= g++ -g
+CXX	= g++
 
 MKDIR	= mkdir -p
 
@@ -75,7 +75,7 @@ LDFLAGS	= -pthread
 
 LDFLAGSUI	= -pthread -lSDL -lSDL_ttf
 
-CXXFLAGS	= -Iinclude -W -Wextra -Wall -Wpointer-arith -Wcast-qual -Wcast-align -Wconversion -Wdouble-promotion -Wold-style-cast -Wfloat-equal -Woverloaded-virtual -Wshadow -Weffc++ -Werror -Wfatal-errors
+CXXFLAGS	= -Iinclude -W -Wextra -Wall -Weffc++
 
 $(NAME): $(OBJ)
 	@$(CXX) $(LDFLAGS) -o $(NAME) $(OBJ)
