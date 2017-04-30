@@ -5,14 +5,14 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Sat Apr 29 10:28:02 2017 Nathan Scutari
-// Last update Sun Apr 30 16:32:48 2017 Nathan Scutari
+// Last update Sun Apr 30 17:45:49 2017 Nathan Scutari
 //
 
 #include <iostream>
 #include "ui.hpp"
 
 Ui::Ui(int threads)
-  : win(NULL), main(NULL), txt(NULL), input(""), last_event(0), font(), threads(threads), orders()
+  : win(NULL), main(NULL), txt(NULL), separator(NULL), input(""), last_event(0), font(), threads(threads), orders()
 {
   char		center[] = "SDL_VIDEO_WINDOW_POS=center";
 
@@ -32,6 +32,7 @@ void	Ui::init_main_surface()
   SDL_Rect	pos;
   SDL_Surface	*line;
 
+  separator = SDL_CreateRGBSurface(SDL_HWSURFACE, 980, 1, 32, 0, 0, 0, 0);
   main = SDL_CreateRGBSurface(SDL_HWSURFACE, 1280, 900, 32, 0, 0, 0, 0);
   line = SDL_CreateRGBSurface(SDL_HWSURFACE, 1280, 1, 32, 0, 0, 0, 0);
   pos.x = 0;
@@ -73,7 +74,10 @@ int	Ui::get_user_input(void)
   while (SDL_PollEvent(&event))
     {
       if (event.type == SDL_QUIT)
-	input = "exit";
+	{
+	  end = true;
+	  input = "exit";
+	}
       else if (event.key.keysym.unicode >= 32 && event.key.keysym.unicode <= 255 &&
 	       last_event != event.key.keysym.unicode)
 	input += event.key.keysym.unicode;
@@ -114,16 +118,18 @@ std::vector<std::string>	Ui::get_order_lines(std::vector<std::string> &data)
   while (!empty)
     {
       line.clear();
-      while (line.size() <= 50)
+      while (line.size() <= 90)
 	{
-	  ++pos;
-	  if (pos > data.size())
+	  if (pos >= data.size())
 	    {
 	      empty = true;
 	      break;
 	    }
-	  if (line.size() + data[pos - 1].size() + 3 <= 50)
-	    line += data[pos - 1] + " | ";
+	  if (line.size() + data[pos].size() + 3 <= 90)
+	    {
+	      line += data[pos] + " | ";
+	      ++pos;
+	    }
 	  else
 	    break;
 	}
@@ -132,10 +138,24 @@ std::vector<std::string>	Ui::get_order_lines(std::vector<std::string> &data)
   return (txt);
 }
 
+void	Ui::updateOrderSize(t_order &order)
+{
+  int	data;
+  int	size;
+
+  size = order.file->h + 5;
+  data = order.txt.size() - 1;
+  if (data < 0)
+    data = 0;
+  size += data * 5 + (data + 1) * order.file->h;
+  order.h = size;
+}
+
 void	Ui::addOrder(t_command &order)
 {
   std::vector<std::string>	info = {"PHONE_NUMBER", "EMAIL_ADDRESS", "IP_ADDRESS"};
   std::string	tmp;
+  SDL_Color	head = {0, 0, 170};
   SDL_Color	txt = {0, 0, 0};
   SDL_Color	bg = {255, 255, 255};
   t_order	new_order;
@@ -150,24 +170,42 @@ void	Ui::addOrder(t_command &order)
     {
       new_order.txt.push_back(TTF_RenderText_Shaded(font, info[i].c_str(), txt, bg));
     }
+  updateOrderSize(new_order);
   orders.push_back(new_order);
+}
+
+void	Ui::print_order_nbr(int i, int y)
+{
+  SDL_Rect	pos;
+
+  y -= (orders[i].h + 10);
+  pos.x = 0;
+  pos.y = y;
+  SDL_BlitSurface(separator, NULL, win, &pos);
+  pos.y += 10;
+  SDL_BlitSurface(orders[i].file, NULL, win, &pos);
+  pos.x = orders[i].file->w + 20;
+  SDL_BlitSurface(orders[i].information, NULL, win, &pos);
+  pos.x = 0;
+  pos.y += orders[i].file->h + 5;
+  for (int x = 0 ; x < orders[i].txt.size() ; ++x)
+    {
+      SDL_BlitSurface(orders[i].txt[x], NULL, win, &pos);
+      pos.y += orders[0].file->h + 5;
+    }
 }
 
 void	Ui::print_orders(void)
 {
+  int		y;
   SDL_Rect	pos;
 
   pos.x = 0;
-  pos.y = 0;
-  SDL_BlitSurface(orders[0].file, NULL, win, &pos);
-  pos.x = orders[0].file->w + 20;
-  SDL_BlitSurface(orders[0].information, NULL, win, &pos);
-  pos.y = orders[0].file->h + 5;
-  pos.x = 0;
-  for (int i = 0 ; i < orders[0].txt.size() ; ++i)
+  y = 820;
+  for (int i = orders.size() - 1 ; i >= 0 ; --i)
     {
-      SDL_BlitSurface(orders[0].txt[i], NULL, win, &pos);
-      pos.y += orders[0].file->h + 5;
+      print_order_nbr(i, y);
+      y -= (orders[i].h + 20);
     }
 }
 

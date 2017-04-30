@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Sat Apr 29 10:25:31 2017 Nathan Scutari
-// Last update Sun Apr 30 16:22:44 2017 Nathan Scutari
+// Last update Sun Apr 30 17:56:53 2017 Nathan Scutari
 //
 
 #ifndef __UI_HPP__
@@ -25,12 +25,14 @@ private:
     SDL_Surface			*file;
     SDL_Surface			*information;
     std::vector<SDL_Surface *>	txt;
+    int				h;
   }			t_order;
 
 private:
   SDL_Surface	*win;
   SDL_Surface	*main;
   SDL_Surface	*txt;
+  SDL_Surface	*separator;
   int		last_event;
   std::string	input;
   TTF_Font	*font;
@@ -47,6 +49,8 @@ private:
   void				print_txt(void);
   std::vector<std::string>	get_order_lines(std::vector<std::string> &);
   void				print_orders(void);
+  void				updateOrderSize(t_order &);
+  void				print_order_nbr(int, int);
 
 public:
   Ui(int);
