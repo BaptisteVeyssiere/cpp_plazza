@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Thu Apr 27 00:21:57 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 04:00:14 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 04:08:22 2017 Baptiste Veyssiere
 //
 
 #ifndef __MAIN_PROCESS_HPP__
@@ -45,6 +45,7 @@ private:
   void		check_processes();
   void		remove_process(int i, const t_command &);
   void		display_result(const t_command &) const;
+  void		wait_process();
 };
 
 #endif // !__MAIN_PROCESS_HPP__

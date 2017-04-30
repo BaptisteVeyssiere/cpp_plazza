@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 03:59:33 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 04:07:31 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
@@ -20,6 +20,14 @@ Main_Process::Main_Process(unsigned int nbr)
 
 Main_Process::~Main_Process() {}
 
+void	Main_Process::wait_process()
+{
+  while (this->process_nbr > 0)
+    this->check_processes();
+  std::for_each(this->pipe_tab.begin(), this->pipe_tab.end(),
+		[&](Named_pipe &fifo) { fifo.release(); });
+}
+
 int	Main_Process::loop()
 {
   Parser			parser;
@@ -28,7 +36,6 @@ int	Main_Process::loop()
   std::streambuf		*pbuf;
   std::streamsize		size;
 
-  std::cout << QUESTION;
   std::cin.sync_with_stdio(false);
   try
     {
@@ -44,25 +51,18 @@ int	Main_Process::loop()
 		  this->process_command(command_list);
 		  command.clear();
 		  command_list.clear();
-		  std::cout << QUESTION;
 		}
 	      else
 		break;
 	    }
 	  this->check_processes();
 	}
-      while (this->process_nbr > 0)
-	this->check_processes();
-      std::for_each(this->pipe_tab.begin(), this->pipe_tab.end(),
-		    [&](Named_pipe &fifo) { fifo.release(); });
+      this->wait_process();
     }
   catch (const std::exception &e)
     {
       std::cerr << "ERROR: " << e.what() << std::endl;
-      while (this->process_nbr > 0)
-	this->check_processes();
-      std::for_each(this->pipe_tab.begin(), this->pipe_tab.end(),
-		    [&](Named_pipe &fifo) { fifo.release(); });
+      this->wait_process();
       return (1);
     }
   return (0);
