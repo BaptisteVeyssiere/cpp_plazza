@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Thu Apr 27 00:21:57 2017 Baptiste Veyssiere
-// Last update Fri Apr 28 15:31:50 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 04:00:14 2017 Baptiste Veyssiere
 //
 
 #ifndef __MAIN_PROCESS_HPP__
@@ -26,6 +26,7 @@ private:
   unsigned int			thread_nbr;
   unsigned int			process_nbr;
   std::vector<Named_pipe>	pipe_tab;
+  std::vector<bool>		activated;
 
 private:
   Main_Process(const Main_Process &);
@@ -38,10 +39,12 @@ public:
   int	loop();
 
 private:
-  void		Add_pipe(std::vector<Named_pipe>::iterator, unsigned int);
+  void		Add_pipe(unsigned int);
   unsigned int	create_new_process();
   void		process_command(std::vector<t_command> &);
   void		check_processes();
+  void		remove_process(int i, const t_command &);
+  void		display_result(const t_command &) const;
 };
 
 #endif // !__MAIN_PROCESS_HPP__

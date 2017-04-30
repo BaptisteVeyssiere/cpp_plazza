@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 00:21:57 2017 ilyas semmaoui
+// Last update Sun Apr 30 03:49:41 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -83,7 +83,6 @@ bool	Named_pipe::checkFifo(const std::string &file) const
   struct stat	statstruct;
   int		result;
 
-  //std::cout << "stat with file " << file << std::endl;
   if (file.empty())
     return (false);
   result = stat(file.c_str(), &statstruct);
@@ -155,7 +154,6 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
   if (size == 0)
     return (*this);
   getline(this->in, line);
-  std::cout << line << std::endl;
   if (line.empty())
     return (*this);
   streamline << line;
@@ -176,7 +174,7 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
   std::for_each(command.data.begin(), command.data.end(), [&](std::string &result) { std::replace(result.begin(), result.end(), ':', ' '); });
   std::cout << "Receiving : file = " << command.file << ", threads = " << command.threads << ", data = ";
   for (unsigned int i = 0; i < command.data.size(); i++)
-    std::cout << command.data[i] << "|";
+    std::cout << command.data[i] << ", ";
   std::cout << "Via command " << line << std::endl;
   return (*this);
 }
