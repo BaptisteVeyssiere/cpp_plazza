@@ -51,7 +51,7 @@ void Finder::findPhone(std::vector<std::string> &data, std::string const &mem) {
 long    Finder::matchCount(std::vector<char> const &mem)
 {
   long  count = 0;
-  for (long i = 0; i < mem.size(); i++)
+  for (size_t i = 0; i < mem.size(); i++)
   {
     if ((mem[i] > 0 && mem[i] < 9) || (mem[i] > 13 && mem[i] < 32)) {
       count -= 4;
@@ -88,13 +88,11 @@ long    Finder::matchCount(std::vector<char> const &mem)
   return (count);
 }
 
-void Finder::findCaesar(std::vector<std::vector<std::string>> &data, std::vector<char> const &mem,
-                        std::function<void(std::vector<std::string> &data, std::string const &mem)> finding) {
-  std::vector<std::pair<unsigned char, long>>      analyse;
+long Finder::findCaesar(std::vector<char> const &mem, std::vector<std::pair<unsigned char, long>> analyse) {
   unsigned char key;
   long  max = -9223372036854775807;
   key = 0;
-  while (key <= 255) {
+  while (1) {
     std::vector<char> decryptMem = mem;
     Decrypt::caesarDecrypt(decryptMem, key);
     std::string memory(decryptMem.data());
@@ -108,28 +106,14 @@ void Finder::findCaesar(std::vector<std::vector<std::string>> &data, std::vector
       break;
     ++key;
   }
-  for (int i = 0; i < analyse.size(); i++) {
-    if (analyse[i].second == max) {
-      std::vector<char> decryptMem = mem;
-      Decrypt::caesarDecrypt(decryptMem, analyse[i].first);
-      std::string memory(decryptMem.data());
-      std::vector<std::string> list;
-      finding(list, memory);
-      if (list.size() > 0) {
-        data.push_back(list);
-      }
-    }
-  }
-  std::cout << "result=" << analyse.size() << std::endl;
+  return (max);
 }
 
-void Finder::findXor(std::vector<std::vector<std::string>> &data, std::vector<char> const &mem,
-                     std::function<void(std::vector<std::string> &data, std::string const& mem)> finding) {
-    std::vector<std::pair<std::vector<unsigned char>, long>>      analyse;
+long Finder::findXor(std::vector<char> const &mem, std::vector<std::pair<std::vector<unsigned char>, long>> analyse) {
     std::vector<unsigned char> key;
     long  max = -9223372036854775807;
     key.push_back(0);
-    while (key[0] <= 255) {
+    while (1) {
       std::vector<char> decryptMem = mem;
       Decrypt::xorDecrypt(decryptMem, key);
       std::string memory(decryptMem.data());
@@ -145,8 +129,8 @@ void Finder::findXor(std::vector<std::vector<std::string>> &data, std::vector<ch
     }
     key[0] = 0;
     key.push_back(1);
-    while (key[0] <= 255) {
-      while (key[1] <= 255) {
+    while (1) {
+      while (1) {
         std::vector<char> decryptMem = mem;
         Decrypt::xorDecrypt(decryptMem, key);
         std::string       memory(decryptMem.data());
@@ -165,56 +149,147 @@ void Finder::findXor(std::vector<std::vector<std::string>> &data, std::vector<ch
       ++key[0];
       key[1] = 0;
     }
-    for (int i = 0; i < analyse.size(); i++) {
-      if (analyse[i].second == max) {
-        std::vector<char> decryptMem = mem;
-        Decrypt::xorDecrypt(decryptMem, analyse[i].first);
-        std::string memory(decryptMem.data());
-        std::vector<std::string> list;
-        finding(list, memory);
-        if (list.size() > 0) {
-          data.push_back(list);
-        }
+  return (max);
+}
+
+void Finder::findCaesarValues(std::vector<std::string> &data, std::vector<char> const &mem, unsigned char key,
+                              std::function<void(std::vector<std::string> &, std::string const &)> finding){
+  std::vector<char> decryptMem = mem;
+  Decrypt::caesarDecrypt(decryptMem, key);
+  std::string memory(decryptMem.data());
+  std::vector<std::string> list;
+  finding(list, memory);
+  if (list.size() > 0) {
+    std::stringstream ss;
+    ss << "Key=" << std::hex << key << std::dec;
+    data.push_back(ss.str());
+    for (std::string val : list) {
+      data.push_back(val);
+    }
+  }
+}
+
+void Finder::findXorValues(std::vector<std::string> &data, std::vector<char> const &mem, std::vector<unsigned char> key,
+                              std::function<void(std::vector<std::string> &, std::string const &)> finding){
+  std::vector<char> decryptMem = mem;
+  Decrypt::xorDecrypt(decryptMem, key);
+  std::string memory(decryptMem.data());
+  std::vector<std::string> list;
+  finding(list, memory);
+  if (list.size() > 0) {
+    std::stringstream ss;
+    if (key.size() > 1)
+      ss << "Key=" << std::hex << key[0] << key[1] << std::dec;
+    else
+      ss << "Key=" << std::hex << key[0] << std::dec;
+    data.push_back(ss.str());
+    for (std::string val : list) {
+      data.push_back(val);
+    }
+  }
+}
+
+void Finder::findMailCiphered(std::vector<std::string> &data, std::vector<char> const &mem) {
+  std::vector<std::pair<std::vector<unsigned char>, long>>      analyseX;
+  std::vector<std::pair<unsigned char, long>>      analyseC;
+  long maxC = Finder::findCaesar(mem, analyseC);
+  long maxX = Finder::findXor(mem, analyseX);
+  if (maxC > maxX) {
+    data.push_back("Caesar>>");
+    for (size_t i = 0; i < analyseC.size(); i++) {
+      if (analyseC[i].second == maxC) {
+        findCaesarValues(data, mem, analyseC[i].first, Finder::findMail);
       }
     }
-    std::cout << "result=" << analyse.size() << std::endl;
+  } else if (maxX > maxC) {
+    data.push_back("Xor>>");
+    for (size_t i = 0; i < analyseX.size(); i++) {
+      if (analyseX[i].second == maxX) {
+        findXorValues(data, mem, analyseX[i].first, Finder::findMail);
+      }
+    }
+  } else {
+    data.push_back("Caesar>>");
+    for (size_t i = 0; i < analyseC.size(); i++) {
+      if (analyseC[i].second == maxC) {
+        findCaesarValues(data, mem, analyseC[i].first, Finder::findMail);
+      }
+    }
+    data.push_back("Xor>>");
+    for (size_t i = 0; i < analyseX.size(); i++) {
+      if (analyseX[i].second == maxX) {
+        findXorValues(data, mem, analyseX[i].first, Finder::findMail);
+      }
+    }
+  }
 }
 
-void Finder::findMailXor(std::vector<std::vector<std::string>> &data, std::vector<char> const &mem) {
-  Finder::findXor(data, mem, Finder::findMail);
+void Finder::findIPCiphered(std::vector<std::string> &data, std::vector<char> const &mem) {
+  std::vector<std::pair<std::vector<unsigned char>, long>>      analyseX;
+  std::vector<std::pair<unsigned char, long>>      analyseC;
+  long maxC = Finder::findCaesar(mem, analyseC);
+  long maxX = Finder::findXor(mem, analyseX);
+  if (maxC > maxX) {
+    data.push_back("Caesar>>");
+    for (size_t i = 0; i < analyseC.size(); i++) {
+      if (analyseC[i].second == maxC) {
+        findCaesarValues(data, mem, analyseC[i].first, Finder::findIP);
+      }
+    }
+  } else if (maxX > maxC) {
+    data.push_back("Xor>>");
+    for (size_t i = 0; i < analyseX.size(); i++) {
+      if (analyseX[i].second == maxX) {
+        findXorValues(data, mem, analyseX[i].first, Finder::findIP);
+      }
+    }
+  } else {
+    data.push_back("Caesar>>");
+    for (size_t i = 0; i < analyseC.size(); i++) {
+      if (analyseC[i].second == maxC) {
+        findCaesarValues(data, mem, analyseC[i].first, Finder::findIP);
+      }
+    }
+    data.push_back("Xor>>");
+    for (size_t i = 0; i < analyseX.size(); i++) {
+      if (analyseX[i].second == maxX) {
+        findXorValues(data, mem, analyseX[i].first, Finder::findIP);
+      }
+    }
+  }
 }
 
-void Finder::findIPXor(std::vector<std::vector<std::string>> &data, std::vector<char> const &mem) {
-  Finder::findXor(data, mem, Finder::findIP);
-}
-
-void Finder::findPhoneXor(std::vector<std::vector<std::string>> &data, std::vector<char> const &mem) {
-  Finder::findXor(data, mem, Finder::findPhone);
-}
-
-void Finder::findMailCaesar(std::vector<std::vector<std::string>> &data, std::vector<char> const &mem) {
-  Finder::findCaesar(data, mem, Finder::findMail);
-}
-
-void Finder::findIPCaesar(std::vector<std::vector<std::string>> &data, std::vector<char> const &mem) {
-  Finder::findCaesar(data, mem, Finder::findIP);
-}
-
-void Finder::findPhoneCaesar(std::vector<std::vector<std::string>> &data, std::vector<char> const &mem) {
-  Finder::findCaesar(data, mem, Finder::findPhone);
-}
-
-void Finder::findMailCiphered(std::vector<std::vector<std::string>> &data, std::vector<char> const &mem) {
-  Finder::findMailCaesar(data, mem);
-  Finder::findMailXor(data, mem);
-}
-
-void Finder::findIPCiphered(std::vector<std::vector<std::string>> &data, std::vector<char> const &mem) {
-  Finder::findIPCaesar(data, mem);
-  Finder::findIPXor(data, mem);
-}
-
-void Finder::findPhoneCiphered(std::vector<std::vector<std::string>> &data, std::vector<char> const &mem) {
-  Finder::findPhoneCaesar(data, mem);
-  Finder::findPhoneXor(data, mem);
+void Finder::findPhoneCiphered(std::vector<std::string> &data, std::vector<char> const &mem) {
+  std::vector<std::pair<std::vector<unsigned char>, long>>      analyseX;
+  std::vector<std::pair<unsigned char, long>>      analyseC;
+  long maxC = Finder::findCaesar(mem, analyseC);
+  long maxX = Finder::findXor(mem, analyseX);
+  if (maxC > maxX) {
+    data.push_back("Caesar>>");
+    for (size_t i = 0; i < analyseC.size(); i++) {
+      if (analyseC[i].second == maxC) {
+        findCaesarValues(data, mem, analyseC[i].first, Finder::findPhone);
+      }
+    }
+  } else if (maxX > maxC) {
+    data.push_back("Xor>>");
+    for (size_t i = 0; i < analyseX.size(); i++) {
+      if (analyseX[i].second == maxX) {
+        findXorValues(data, mem, analyseX[i].first, Finder::findPhone);
+      }
+    }
+  } else {
+    data.push_back("Caesar>>");
+    for (size_t i = 0; i < analyseC.size(); i++) {
+      if (analyseC[i].second == maxC) {
+        findCaesarValues(data, mem, analyseC[i].first, Finder::findPhone);
+      }
+    }
+    data.push_back("Xor>>");
+    for (size_t i = 0; i < analyseX.size(); i++) {
+      if (analyseX[i].second == maxX) {
+        findXorValues(data, mem, analyseX[i].first, Finder::findPhone);
+      }
+    }
+  }
 }
