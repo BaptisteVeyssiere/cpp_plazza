@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 22:38:59 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 22:58:17 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process_ui.hpp"
@@ -80,8 +80,10 @@ int	Main_Process::loop()
 	      command.clear();
 	      this->check_processes();
 	    }
+	  this->interface->updateStatus(std::vector<int>(), std::vector<int>());
 	  this->check_processes();
 	}
+      this->interface->updateStatus(std::vector<int>(), std::vector<int>());
       this->wait_process();
     }
   catch (const std::exception &e)
@@ -176,6 +178,8 @@ void		Main_Process::process_command(std::vector<t_command> &command_list)
     {
       min = this->thread_nbr * 2;
       this->check_processes();
+      nbr.clear();
+      ids.clear();
       for (int i = 0; i < static_cast<int>(this->process_nbr); i++)
 	{
 	  if (this->activated[i])
@@ -192,8 +196,6 @@ void		Main_Process::process_command(std::vector<t_command> &command_list)
 		this->remove_process(i, thread_request);
 	      else
 		{
-		  nbr.clear();
-		  ids.clear();
 		  nbr.push_back(thread_request.threads);
 		  str = this->pipe_tab[i].Get_pathin();
 		  str = str.substr(11);
