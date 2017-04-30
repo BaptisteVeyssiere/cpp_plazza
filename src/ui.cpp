@@ -5,14 +5,14 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Sat Apr 29 10:28:02 2017 Nathan Scutari
-// Last update Sat Apr 29 16:02:56 2017 Nathan Scutari
+// Last update Sun Apr 30 15:19:25 2017 Nathan Scutari
 //
 
 #include <iostream>
 #include "ui.hpp"
 
-Ui::Ui()
-  : win(NULL), main(NULL), txt(NULL), input(""), last_event(0), font()
+Ui::Ui(int threads)
+  : win(NULL), main(NULL), txt(NULL), input(""), last_event(0), font(), threads(threads), orders()
 {
   char		center[] = "SDL_VIDEO_WINDOW_POS=center";
 
@@ -102,6 +102,11 @@ void	Ui::print_txt()
   pos.x = 50;
   pos.y = 840;
   SDL_BlitSurface(txt, NULL, win, &pos);
+}
+
+void	Ui::add_order(t_command *command)
+{
+
 }
 
 std::string	Ui::refresh(void)

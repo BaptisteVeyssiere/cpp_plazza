@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 19 11:21:23 2017 Nathan Scutari
-// Last update Sat Apr 29 21:52:16 2017 Nathan Scutari
+// Last update Sun Apr 30 15:19:46 2017 Nathan Scutari
 //
 
 #include <iostream>
@@ -98,7 +98,7 @@ void	Process::thread_control(int id)
     }
 }
 
-int	Process::clone(int id)
+pid_t	Process::clone(int id)
 {
   pid_t				pid;
 
@@ -109,9 +109,9 @@ int	Process::clone(int id)
       pipe = new Named_pipe("/tmp/plazza" + std::to_string(id) + "_out", "/tmp/plazza" + std::to_string(id) + "_in", true);
       pool = new T_pool(t_nbr);
       thread_control(id);
-      return (1);
+      return (0);
     }
-  return (0);
+  return (pid);
 }
 
 Process::~Process()

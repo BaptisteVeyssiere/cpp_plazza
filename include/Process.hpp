@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 19 11:11:25 2017 Nathan Scutari
-// Last update Fri Apr 28 17:50:35 2017 Nathan Scutari
+// Last update Sun Apr 30 15:20:11 2017 Nathan Scutari
 //
 
 #ifndef __PROCESS_HPP__
@@ -43,7 +43,7 @@ public:
   Process(int);
   ~Process();
 
-  int	clone(int);
+  pid_t	clone(int);
 };
 
 #endif // !__PROCESS_HPP__
