@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 04:07:31 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 04:38:14 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
@@ -118,9 +118,9 @@ void	Main_Process::display_result(const t_command &command) const
   std::cout << ok << " commands received" << std::endl;
 }
 
-void	Main_Process::check_processes()
+void		Main_Process::check_processes()
 {
-  t_command			check = { "", Information::PHONE_NUMBER, 0, {} };
+  t_command	check = { "", Information::PHONE_NUMBER, 0, {} };
 
   for (int i = 0; i < static_cast<int>(this->pipe_tab.size()); i++)
     {
@@ -129,46 +129,46 @@ void	Main_Process::check_processes()
       this->pipe_tab[i] >> check;
       if (check.file == "end")
 	this->remove_process(i, check);
-      else if (check.data.size() > 0 || check.file != "")
+      else if (check.file != "")
 	this->display_result(check);
       check.file = "";
       check.data.clear();
     }
 }
 
-void	Main_Process::process_command(std::vector<t_command> &command_list)
+void		Main_Process::process_command(std::vector<t_command> &command_list)
 {
   t_command	thread_request = { "", Information::PHONE_NUMBER, 1, {} };
   unsigned int	min;
   unsigned int	thread_it;
   unsigned int	id;
-  std::vector<std::string>	info { "PHONE_NUMBER", "EMAIL_ADDRESS", "IP_ADDRESS" };
+  static int	ko = 0;
 
   for (unsigned int it = 0; it < command_list.size(); it++)
     {
+      ++ko;
+      std::cout << ko << " command sent" << std::endl;
       min = this->thread_nbr * 2;
       this->check_processes();
       for (int i = 0; i < static_cast<int>(this->process_nbr); i++)
 	{
-	  if (this->activated[i] == false)
-	    continue;
-	  thread_request.file = "";
-	  thread_request.threads = 1;
-	  thread_request.data.clear();
-	  this->pipe_tab[i] << thread_request;
-	  while (thread_request.file != "ok" && thread_request.file != "end")
+	  if (this->activated[i])
 	    {
-	      if (thread_request.file != "")
-		this->display_result(thread_request);
-	      thread_request.file = "";
-	      this->pipe_tab[i] >> thread_request;
-	    }
-	  if (thread_request.file == "end")
-	    this->remove_process(i, thread_request);
-	  else if (thread_request.threads < min)
-	    {
-	      min = thread_request.threads;
-	      thread_it = i;
+	      thread_request = { "", Information::PHONE_NUMBER, 1, {} };
+	      this->pipe_tab[i] << thread_request;
+	      while (thread_request.file != "ok" && thread_request.file != "end")
+		{
+		  if (thread_request.file != "")
+		    this->display_result(thread_request);
+		  this->pipe_tab[i] >> thread_request;
+		}
+	      if (thread_request.file == "end")
+		this->remove_process(i, thread_request);
+	      else if (thread_request.threads < min)
+		{
+		  min = thread_request.threads;
+		  thread_it = i;
+		}
 	    }
 	}
       if (min < (this->thread_nbr * 2))

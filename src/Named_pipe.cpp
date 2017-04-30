@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 03:49:41 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 04:41:05 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -146,7 +146,7 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
   std::streamsize	size;
   std::string		str;
 
-  command.data.clear();
+  command = {};
   if (!this->checkFifo(this->path_in))
     return (*this);
   pbuf = this->in.rdbuf();
@@ -175,6 +175,6 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
   std::cout << "Receiving : file = " << command.file << ", threads = " << command.threads << ", data = ";
   for (unsigned int i = 0; i < command.data.size(); i++)
     std::cout << command.data[i] << ", ";
-  std::cout << "Via command " << line << std::endl;
+  std::cout << std::endl;
   return (*this);
 }
