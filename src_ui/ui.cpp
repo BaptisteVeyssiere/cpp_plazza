@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Sat Apr 29 10:28:02 2017 Nathan Scutari
-// Last update Sun Apr 30 19:31:22 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 19:59:16 2017 Nathan Scutari
 //
 
 #include <iostream>
@@ -70,10 +70,13 @@ void	Ui::update_text_surface(bool diff)
 
   if (diff)
     {
-      if (txt)
-	SDL_FreeSurface(txt);
-      if ((txt = TTF_RenderText_Shaded(font, input.c_str(), color, bg)) == NULL)
-	throw std::runtime_error("SDL surface allocation failed");
+      if (input.size() > 0)
+	{
+	  if (txt)
+	    SDL_FreeSurface(txt);
+	  if ((txt = TTF_RenderText_Shaded(font, input.c_str(), color, bg)) == NULL)
+	    throw std::runtime_error("SDL surface allocation failed");
+	}
     }
 }
 
@@ -89,6 +92,7 @@ int	Ui::get_user_input(void)
 	{
 	  end = true;
 	  input = "exit";
+	  event.key.keysym.unicode = 0;
 	}
       else if (event.key.keysym.unicode >= 32 && event.key.keysym.unicode <= 255 &&
 	       last_event != event.key.keysym.unicode)
@@ -96,10 +100,11 @@ int	Ui::get_user_input(void)
       else if (event.key.keysym.unicode == '\b' && input.size() > 0 &&
 	       last_event != event.key.keysym.unicode)
 	input.pop_back();
-      if (event.key.keysym.sym == SDLK_RETURN && event.type == SDL_KEYDOWN)
+      else if (event.key.keysym.sym == SDLK_RETURN && event.type == SDL_KEYDOWN)
 	{
 	  diff = true;
 	  end = true;
+	  event.key.keysym.unicode = 0;
 	}
       if (last_event != event.key.keysym.unicode)
 	{
@@ -117,7 +122,8 @@ void	Ui::print_txt()
 
   pos.x = 50;
   pos.y = 840;
-  SDL_BlitSurface(txt, NULL, win, &pos);
+  if (input.size() > 0)
+    SDL_BlitSurface(txt, NULL, win, &pos);
 }
 
 std::vector<std::string>	Ui::get_order_lines(const std::vector<std::string> &data)
