@@ -5,18 +5,23 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 16:53:00 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 17:05:46 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
 
 Main_Process::Main_Process(unsigned int nbr)
-  : pattern(nbr), thread_nbr(nbr), process_nbr(0), pipe_tab(), activated(), pid()
+  : pattern(nbr), thread_nbr(nbr), process_nbr(0), pipe_tab(), activated(), pid(), log_file()
 {
   this->create_new_process();
+  this->log_file.open("logs.txt");
 }
 
-Main_Process::~Main_Process() {}
+Main_Process::~Main_Process()
+{
+  if (this->log_file.is_open())
+    this->log_file.close();
+}
 
 void	Main_Process::wait_process()
 {
@@ -111,11 +116,14 @@ void	Main_Process::remove_process(int i, const t_command &command)
   --this->process_nbr;
 }
 
-void	Main_Process::display_result(const t_command &command) const
+void	Main_Process::display_result(const t_command &command)
 {
   std::vector<std::string>	info { "PHONE_NUMBER", "EMAIL_ADDRESS", "IP_ADDRESS" };
 
-  std::cout << command.file << " " << info[command.information] << ":" << std::endl;
+  if (!this->log_file.is_open())
+    throw std::runtime_error("The log file is not open");
+  this->log_file << command.file << " " << info[command.information] << ":" << std::endl;
+  std::for_each(command.data.begin(), command.data.end(), [&](const std::string &str) { this->log_file << str << std::endl; });
   std::for_each(command.data.begin(), command.data.end(), [&](const std::string &str) { std::cout << str << std::endl; });
 }
 
