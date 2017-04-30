@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Sun Apr 30 04:10:36 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 19:22:10 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 21:04:42 2017 ilyas semmaoui
 //
 
 #include <iostream>
@@ -64,6 +64,8 @@ std::vector<char> Thread::getFileData(std::string const& path)
             if (!file.fail()) {
                 file.read(fileMem.data(), static_cast<std::streamsize>(size));
                 if (!file.fail()) {
+		  if (fileMem.back() == 0)
+		    fileMem.pop_back();
 		  return (fileMem);
                 }
             }

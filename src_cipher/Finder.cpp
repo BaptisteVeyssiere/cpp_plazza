@@ -106,7 +106,7 @@ long    Finder::matchCount(std::vector<char> const &mem)
   return (count);
 }
 
-long Finder::findCaesar(std::vector<char> const &mem, std::vector<std::pair<unsigned char, long>> analyse) {
+long Finder::findCaesar(std::vector<char> const &mem, std::vector<std::pair<unsigned char, long>> &analyse) {
   unsigned char key;
   long  max = -9223372036854775807;
   key = 0;
@@ -114,7 +114,7 @@ long Finder::findCaesar(std::vector<char> const &mem, std::vector<std::pair<unsi
     std::vector<char> decryptMem = mem;
     Decrypt::caesarDecrypt(decryptMem, key);
     std::string memory(decryptMem.data());
-    if (decryptMem[0] != '\0' && memory.size() == mem.size()) {
+    if (decryptMem[0] != '\0' && memory.size() >= mem.size()) {
       long tmp = Finder::matchCount(decryptMem);
       if (tmp > max)
         max = tmp;
@@ -127,7 +127,7 @@ long Finder::findCaesar(std::vector<char> const &mem, std::vector<std::pair<unsi
   return (max);
 }
 
-long Finder::findXor(std::vector<char> const &mem, std::vector<std::pair<std::vector<unsigned char>, long>> analyse) {
+long Finder::findXor(std::vector<char> const &mem, std::vector<std::pair<std::vector<unsigned char>, long>> &analyse) {
     std::vector<unsigned char> key;
     long  max = -9223372036854775807;
     key.push_back(0);
@@ -135,7 +135,7 @@ long Finder::findXor(std::vector<char> const &mem, std::vector<std::pair<std::ve
       std::vector<char> decryptMem = mem;
       Decrypt::xorDecrypt(decryptMem, key);
       std::string memory(decryptMem.data());
-      if (decryptMem[0] != '\0' && memory.size() == mem.size()) {
+      if (decryptMem[0] != '\0' && memory.size() >= mem.size()) {
         long tmp = Finder::matchCount(decryptMem);
         if (tmp > max)
           max = tmp;
@@ -179,7 +179,7 @@ void Finder::findCaesarValues(std::vector<std::string> &data, std::vector<char> 
   finding(list, memory);
   if (list.size() > 0) {
     std::stringstream ss;
-    ss << "Key=" << std::hex << key << std::dec;
+    ss << "Key=" << std::hex << static_cast<int>(key) << std::dec;
     data.push_back(ss.str());
     for (std::string val : list) {
       data.push_back(val);
@@ -197,9 +197,9 @@ void Finder::findXorValues(std::vector<std::string> &data, std::vector<char> con
   if (list.size() > 0) {
     std::stringstream ss;
     if (key.size() > 1)
-      ss << "Key=" << std::hex << key[0] << key[1] << std::dec;
+      ss << "Key=" << std::hex << static_cast<int>(key[0]) << static_cast<int>(key[1]) << std::dec;
     else
-      ss << "Key=" << std::hex << key[0] << std::dec;
+      ss << "Key=" << std::hex << static_cast<int>(key[0]) << std::dec;
     data.push_back(ss.str());
     for (std::string val : list) {
       data.push_back(val);

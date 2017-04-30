@@ -30,7 +30,7 @@ void Decrypt::caesarDecrypt(std::vector<char> &data, unsigned char const &key) {
   for (unsigned int i = 0; i < data.size(); i++) {
     int tmp = static_cast<int>(data[i]) + static_cast<int>(key);
     if (tmp > 255)
-      tmp -= 255;
+      tmp -= 256;
     if ((data[i] = static_cast<char>(tmp)) == 0) {
       data[0] = '\0';
       break;

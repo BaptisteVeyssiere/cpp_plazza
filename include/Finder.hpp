@@ -15,8 +15,8 @@ private:
   ~Finder();
 
   static long matchCount(std::vector<char> const &mem);
-  static long findXor(std::vector<char> const& mem, std::vector<std::pair<std::vector<unsigned char>, long>> analyse);
-  static long findCaesar(std::vector<char> const& mem, std::vector<std::pair<unsigned char, long>> analyse);
+  static long findXor(std::vector<char> const& mem, std::vector<std::pair<std::vector<unsigned char>, long>> &analyse);
+  static long findCaesar(std::vector<char> const& mem, std::vector<std::pair<unsigned char, long>> &analyse);
   static void findCaesarValues(std::vector<std::string> &data, std::vector<char> const& mem, unsigned char key, std::function<void(std::vector<std::string> &, std::string const &)> finding);
   static void findXorValues(std::vector<std::string> &data, std::vector<char> const& mem, std::vector<unsigned char> key, std::function<void(std::vector<std::string> &, std::string const &)> finding);
 
