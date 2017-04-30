@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Sat Apr 29 10:28:02 2017 Nathan Scutari
-// Last update Sun Apr 30 17:45:49 2017 Nathan Scutari
+// Last update Sun Apr 30 19:26:19 2017 Nathan Scutari
 //
 
 #include <iostream>
@@ -18,13 +18,24 @@ Ui::Ui(int threads)
 
   if ((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) == -1 ||
       TTF_Init() == -1 || (font = TTF_OpenFont("./font.ttf", 18)) == NULL)
-    throw std::exception();
+    throw std::runtime_error("SDL / TTF Init failed");
   SDL_EnableUNICODE(1);
   SDL_EnableKeyRepeat(0, 0);
   if ((win = SDL_SetVideoMode(1280, 900, 32,
 			      SDL_HWSURFACE | SDL_DOUBLEBUF)) == NULL)
-    throw std::exception();
+    throw std::runtime_error("SDL failed to open window");
   init_main_surface();
+}
+
+Ui::~Ui()
+{
+  SDL_FreeSurface(main);
+  if (txt)
+    SDL_FreeSurface(txt);
+  SDL_FreeSurface(separator);
+  TTF_CloseFont(font);
+  TTF_Quit();
+  SDL_Quit();
 }
 
 void	Ui::init_main_surface()
@@ -32,25 +43,24 @@ void	Ui::init_main_surface()
   SDL_Rect	pos;
   SDL_Surface	*line;
 
-  separator = SDL_CreateRGBSurface(SDL_HWSURFACE, 980, 1, 32, 0, 0, 0, 0);
-  main = SDL_CreateRGBSurface(SDL_HWSURFACE, 1280, 900, 32, 0, 0, 0, 0);
-  line = SDL_CreateRGBSurface(SDL_HWSURFACE, 1280, 1, 32, 0, 0, 0, 0);
+  if ((separator = SDL_CreateRGBSurface(SDL_HWSURFACE, 980, 1, 32, 0, 0, 0, 0)) == NULL ||
+      (main = SDL_CreateRGBSurface(SDL_HWSURFACE, 1280, 900, 32, 0, 0, 0, 0)) == NULL ||
+      (line = SDL_CreateRGBSurface(SDL_HWSURFACE, 1280, 1, 32, 0, 0, 0, 0)) == NULL)
+    throw std::runtime_error("SDL surface allocation failed");
   pos.x = 0;
   pos.y = 820;
   SDL_FillRect(main, NULL, SDL_MapRGB(win->format, 255, 255, 255));
   SDL_FillRect(line, NULL, SDL_MapRGB(win->format, 0, 0, 0));
   SDL_BlitSurface(line, NULL, main, &pos);
   SDL_FreeSurface(line);
-  line = SDL_CreateRGBSurface(SDL_HWSURFACE, 1, 820, 32, 0, 0, 0, 0);
+  if ((line = SDL_CreateRGBSurface(SDL_HWSURFACE, 1, 820, 32, 0, 0, 0, 0)) == NULL)
+    throw std::runtime_error("SDL surface allocation failed");
   pos.x = 980;
   pos.y = 0;
   SDL_FillRect(line, NULL, SDL_MapRGB(win->format, 0, 0, 0));
   SDL_BlitSurface(line, NULL, main, &pos);
   SDL_FreeSurface(line);
 }
-
-Ui::~Ui()
-{}
 
 void	Ui::update_text_surface(bool diff)
 {
@@ -61,7 +71,8 @@ void	Ui::update_text_surface(bool diff)
     {
       if (txt)
 	SDL_FreeSurface(txt);
-      txt = TTF_RenderText_Shaded(font, input.c_str(), color, bg);
+      if ((txt = TTF_RenderText_Shaded(font, input.c_str(), color, bg)) == NULL)
+	throw std::runtime_error("SDL surface allocation failed");
     }
 }
 
@@ -158,17 +169,22 @@ void	Ui::addOrder(t_command &order)
   SDL_Color	head = {0, 0, 170};
   SDL_Color	txt = {0, 0, 0};
   SDL_Color	bg = {255, 255, 255};
+  SDL_Surface	*tmps;
   t_order	new_order;
 
   tmp = "File: " + order.file;
-  new_order.file = TTF_RenderText_Shaded(font, tmp.c_str(), txt, bg);
+  if ((new_order.file = TTF_RenderText_Shaded(font, tmp.c_str(), txt, bg)) == NULL)
+    throw std::runtime_error("SDL surface allocation failed");
   tmp = "Information: " + info[static_cast<int>(order.information)];
-  new_order.information = TTF_RenderText_Shaded(font, tmp.c_str(), txt, bg);
+  if ((new_order.information = TTF_RenderText_Shaded(font, tmp.c_str(), txt, bg)) == NULL)
+    throw std::runtime_error("SDL surface allocation failed");
   info = get_order_lines(order.data);
   info[0] = "Result: " + info[0];
   for (int i = 0 ;  i < info.size() ; ++i)
     {
-      new_order.txt.push_back(TTF_RenderText_Shaded(font, info[i].c_str(), txt, bg));
+      if ((tmps = TTF_RenderText_Shaded(font, info[i].c_str(), txt, bg)) == NULL)
+	throw std::runtime_error("SDL surface allocation failed");
+      new_order.txt.push_back(tmps);
     }
   updateOrderSize(new_order);
   orders.push_back(new_order);
