@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Sat Apr 29 10:28:02 2017 Nathan Scutari
-// Last update Sun Apr 30 19:59:16 2017 Nathan Scutari
+// Last update Sun Apr 30 20:26:37 2017 Nathan Scutari
 //
 
 #include <iostream>
@@ -16,14 +16,13 @@ Ui::Ui(int _threads)
 {
   char		center[] = "SDL_VIDEO_WINDOW_POS=center";
 
-  if ((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) == -1 ||
+  if ((SDL_Init(SDL_INIT_VIDEO)) == -1 ||
       TTF_Init() == -1 || (font = TTF_OpenFont("./font.ttf", 18)) == NULL)
     throw std::runtime_error("SDL / TTF Init failed");
   SDL_EnableUNICODE(1);
   SDL_EnableKeyRepeat(0, 0);
   SDL_putenv(center);
-  if ((win = SDL_SetVideoMode(1280, 900, 32,
-			      SDL_HWSURFACE | SDL_DOUBLEBUF)) == NULL)
+  if ((win = SDL_SetVideoMode(1280, 900, 32, 0)) == NULL)
     throw std::runtime_error("SDL failed to open window");
   init_main_surface();
 }
