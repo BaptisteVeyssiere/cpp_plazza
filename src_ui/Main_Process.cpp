@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 19:37:32 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 19:42:16 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process_ui.hpp"
@@ -52,10 +52,13 @@ int	Main_Process::loop()
       size = pbuf->in_avail();
       while (size > 0)
 	{
+	  std::cout << "a" << std::endl;
 	  if (getline(std::cin, command))
 	    {
+	      std::cout << "b" << std::endl;
 	      parser.parse(command, command_list);
 	      this->process_command(command_list);
+	      std::cout << "pass" << std::endl;
 	      if ((str = this->interface.refresh()) == "exit")
 		break;
 	      command.clear();
@@ -73,6 +76,7 @@ int	Main_Process::loop()
 	    command_list.clear();
 	    parser.parse(str, command_list);
 	    this->process_command(command_list);
+	    std::cout << "pass" << std::endl;
 	    if ((str = this->interface.refresh()) == "exit")
 	      break;
 	    str.clear();
