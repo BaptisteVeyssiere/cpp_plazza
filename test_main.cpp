@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Sat Apr 29 10:36:47 2017 Nathan Scutari
-// Last update Sat Apr 29 15:29:46 2017 Nathan Scutari
+// Last update Sun Apr 30 16:33:48 2017 Nathan Scutari
 //
 
 #include <iostream>
@@ -14,8 +14,10 @@
 int	main(void)
 {
   std::string	ret;
-  Ui	interface;
+  Ui	interface(3);
+  t_command	order{"Makefile", Information::PHONE_NUMBER, 0, {"12345678", "1 25 52626 277", "mzaeazeiazjek", "iazejzeirkjezikeriotkernk", "azeoazieak", "oakzeioazkeja", "aziejaziejazie", "azeoazkeiojazkel"}};
 
+  interface.addOrder(order);
   for (int i = 0 ; i < 3000 ; ++i)
     {
       ret = interface.refresh();

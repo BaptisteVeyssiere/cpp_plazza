@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Sat Apr 29 10:28:02 2017 Nathan Scutari
-// Last update Sun Apr 30 15:19:25 2017 Nathan Scutari
+// Last update Sun Apr 30 16:32:48 2017 Nathan Scutari
 //
 
 #include <iostream>
@@ -17,7 +17,7 @@ Ui::Ui(int threads)
   char		center[] = "SDL_VIDEO_WINDOW_POS=center";
 
   if ((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) == -1 ||
-      TTF_Init() == -1 || (font = TTF_OpenFont("./font.ttf", 26)) == NULL)
+      TTF_Init() == -1 || (font = TTF_OpenFont("./font.ttf", 18)) == NULL)
     throw std::exception();
   SDL_EnableUNICODE(1);
   SDL_EnableKeyRepeat(0, 0);
@@ -104,9 +104,71 @@ void	Ui::print_txt()
   SDL_BlitSurface(txt, NULL, win, &pos);
 }
 
-void	Ui::add_order(t_command *command)
+std::vector<std::string>	Ui::get_order_lines(std::vector<std::string> &data)
 {
+  bool				empty = false;
+  std::vector<std::string>	txt;
+  std::string			line;
+  int				pos = 0;
 
+  while (!empty)
+    {
+      line.clear();
+      while (line.size() <= 50)
+	{
+	  ++pos;
+	  if (pos > data.size())
+	    {
+	      empty = true;
+	      break;
+	    }
+	  if (line.size() + data[pos - 1].size() + 3 <= 50)
+	    line += data[pos - 1] + " | ";
+	  else
+	    break;
+	}
+      txt.push_back(line);
+    }
+  return (txt);
+}
+
+void	Ui::addOrder(t_command &order)
+{
+  std::vector<std::string>	info = {"PHONE_NUMBER", "EMAIL_ADDRESS", "IP_ADDRESS"};
+  std::string	tmp;
+  SDL_Color	txt = {0, 0, 0};
+  SDL_Color	bg = {255, 255, 255};
+  t_order	new_order;
+
+  tmp = "File: " + order.file;
+  new_order.file = TTF_RenderText_Shaded(font, tmp.c_str(), txt, bg);
+  tmp = "Information: " + info[static_cast<int>(order.information)];
+  new_order.information = TTF_RenderText_Shaded(font, tmp.c_str(), txt, bg);
+  info = get_order_lines(order.data);
+  info[0] = "Result: " + info[0];
+  for (int i = 0 ;  i < info.size() ; ++i)
+    {
+      new_order.txt.push_back(TTF_RenderText_Shaded(font, info[i].c_str(), txt, bg));
+    }
+  orders.push_back(new_order);
+}
+
+void	Ui::print_orders(void)
+{
+  SDL_Rect	pos;
+
+  pos.x = 0;
+  pos.y = 0;
+  SDL_BlitSurface(orders[0].file, NULL, win, &pos);
+  pos.x = orders[0].file->w + 20;
+  SDL_BlitSurface(orders[0].information, NULL, win, &pos);
+  pos.y = orders[0].file->h + 5;
+  pos.x = 0;
+  for (int i = 0 ; i < orders[0].txt.size() ; ++i)
+    {
+      SDL_BlitSurface(orders[0].txt[i], NULL, win, &pos);
+      pos.y += orders[0].file->h + 5;
+    }
 }
 
 std::string	Ui::refresh(void)
@@ -120,6 +182,7 @@ std::string	Ui::refresh(void)
       input = "";
     }
   print_txt();
+  print_orders();
   SDL_Flip(win);
   return (ret);
 }

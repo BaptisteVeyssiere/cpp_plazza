@@ -5,15 +5,17 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Sat Apr 29 10:25:31 2017 Nathan Scutari
-// Last update Sun Apr 30 15:14:02 2017 Nathan Scutari
+// Last update Sun Apr 30 16:22:44 2017 Nathan Scutari
 //
 
 #ifndef __UI_HPP__
 # define __UI_HPP__
 
+#include <vector>
 #include <string>
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
+#include "command.hpp"
 
 class Ui
 {
@@ -39,16 +41,19 @@ private:
   Ui(Ui &);
   Ui	&operator=(Ui &);
 
-  void	init_main_surface(void);
-  int	get_user_input(void);
-  void	update_text_surface(bool);
-  void	print_txt(void);
+  void				init_main_surface(void);
+  int				get_user_input(void);
+  void				update_text_surface(bool);
+  void				print_txt(void);
+  std::vector<std::string>	get_order_lines(std::vector<std::string> &);
+  void				print_orders(void);
 
 public:
-  Ui();
+  Ui(int);
   ~Ui();
 
   std::string	refresh(void);
+  void		addOrder(t_command &);
 };
 
 #endif // !__UI_HPP__

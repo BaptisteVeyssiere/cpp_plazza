@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Fri Apr 28 21:40:55 2017 Nathan Scutari
-// Last update Sat Apr 29 15:44:00 2017 Nathan Scutari
+// Last update Sun Apr 30 16:09:00 2017 Nathan Scutari
 //
 
 #include <iostream>
@@ -31,7 +31,7 @@ int	main(void)
     throw std::exception();
   TTF_Init();
   txt = NULL;
-  font = TTF_OpenFont("./font.ttf", 30);
+  font = TTF_OpenFont("./font.ttf", 22);
   SDL_putenv(center);
   SDL_EnableUNICODE(1);
   SDL_EnableKeyRepeat(0, 0);
@@ -40,6 +40,8 @@ int	main(void)
     throw std::exception();
   main = SDL_CreateRGBSurface(0, 1280, 900, 32, 0, 0, 0, 0);
   SDL_FillRect(main, NULL, SDL_MapRGB(win->format, 255, 255, 255));
+  txt = TTF_RenderText_Shaded(font, "tt", color, bg);
+  std::cout << txt->w << " - " << txt->h << std::endl;
   while (refresh)
     {
       while (SDL_PollEvent(&event))

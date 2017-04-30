@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Fri Apr 28 17:46:40 2017 Nathan Scutari
-// Last update Sat Apr 29 23:50:31 2017 ilyas semmaoui
+// Last update Sun Apr 30 16:36:52 2017 Nathan Scutari
 //
 
 #include "t_pool.hpp"
@@ -49,7 +49,7 @@ int	T_pool::getRunningThreadsNbr()
   nbr = 0;
   for (std::list<std::shared_ptr<t_data>>::iterator it = d_list.begin() ; it != d_list.end() ; ++it)
     {
-      if ((*it)->running == true)
+      if ((*it)->running == true || (*it)->end == true)
 	++nbr;
     }
   return (nbr);
