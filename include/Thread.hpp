@@ -30,14 +30,9 @@ public:
 private:
 
   std::string getFileData(std::string const& path);
-  void findMail(std::vector<std::string> &data, std::string const& mem);
-  void findIP(std::vector<std::string> &data, std::string const& mem);
-  void findPhone(std::vector<std::string> &data, std::string const& mem);
   void findSomething(std::vector<std::string> &data, std::string const& mem, Information const& info);
   void mainLoop(std::shared_ptr<t_data> data);
 
 };
-
-
 
 #endif //PLAZZA_THREAD_HPP

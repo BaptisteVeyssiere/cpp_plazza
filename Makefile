@@ -23,7 +23,9 @@ SRC	= src/main.cpp \
 	src/Named_pipe.cpp \
 	src/t_pool.cpp \
 	src/CondVar.cpp \
-	src/Thread.cpp
+	src/Thread.cpp	\
+	src/Finder.cpp	\
+	src/Decrypt.cpp
 
 SRCDIR	= src
 
