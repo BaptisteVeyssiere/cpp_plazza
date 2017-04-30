@@ -5,15 +5,15 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 22:04:30 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 22:38:59 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process_ui.hpp"
 
-Main_Process::Main_Process(unsigned int nbr)
-  : pattern(nbr), thread_nbr(nbr), process_nbr(0), pipe_tab(), activated(), pid(), log_file(), interface(NULL)
+Main_Process::Main_Process(unsigned int _nbr)
+  : pattern(_nbr), thread_nbr(_nbr), process_nbr(0), pipe_tab(), activated(), pid(), log_file(), interface(NULL)
 {
-  this->interface = new Ui(nbr);
+  this->interface = new Ui(_nbr);
   this->create_new_process();
   this->log_file.open("logs.txt");
 }
@@ -168,9 +168,9 @@ void		Main_Process::process_command(std::vector<t_command> &command_list)
   unsigned int	min;
   unsigned int	thread_it;
   unsigned int	id;
+  std::string	str;
   std::vector<int>	ids;
   std::vector<int>	nbr;
-  std::string	str;
 
   for (unsigned int it = 0; it < command_list.size(); it++)
     {
@@ -192,6 +192,8 @@ void		Main_Process::process_command(std::vector<t_command> &command_list)
 		this->remove_process(i, thread_request);
 	      else
 		{
+		  nbr.clear();
+		  ids.clear();
 		  nbr.push_back(thread_request.threads);
 		  str = this->pipe_tab[i].Get_pathin();
 		  str = str.substr(11);
