@@ -5,20 +5,22 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 17:05:46 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 22:58:17 2017 Baptiste Veyssiere
 //
 
-#include "Main_Process.hpp"
+#include "Main_Process_ui.hpp"
 
-Main_Process::Main_Process(unsigned int nbr)
-  : pattern(nbr), thread_nbr(nbr), process_nbr(0), pipe_tab(), activated(), pid(), log_file()
+Main_Process::Main_Process(unsigned int _nbr)
+  : pattern(_nbr), thread_nbr(_nbr), process_nbr(0), pipe_tab(), activated(), pid(), log_file(), interface(NULL)
 {
+  this->interface = new Ui(_nbr);
   this->create_new_process();
   this->log_file.open("logs.txt");
 }
 
 Main_Process::~Main_Process()
 {
+  delete this->interface;
   if (this->log_file.is_open())
     this->log_file.close();
 }
@@ -43,28 +45,45 @@ int	Main_Process::loop()
   std::string			command;
   std::streambuf		*pbuf;
   std::streamsize		size;
+  std::string			str;
 
   std::cin.sync_with_stdio(false);
+  str = "";
   try
     {
-      while (this->process_nbr > 0)
+      pbuf = std::cin.rdbuf();
+      size = pbuf->in_avail();
+      while (size > 0)
 	{
+	  if (getline(std::cin, command))
+	    {
+	      parser.parse(command, command_list);
+	      this->process_command(command_list);
+	      if ((str = this->interface->refresh()) == "exit")
+	      	break;
+	      command.clear();
+	      command_list.clear();
+	      this->check_processes();
+	    }
 	  pbuf = std::cin.rdbuf();
 	  size = pbuf->in_avail();
-	  if (size > 0)
+	}
+      while (str != "exit")
+	{
+	  if ((command = this->interface->refresh()) == "exit")
+	    break;
+	  else if (command != "")
 	    {
-	      if (getline(std::cin, command))
-		{
-		  parser.parse(command, command_list);
-		  this->process_command(command_list);
-		  command.clear();
-		  command_list.clear();
-		}
-	      else
-		break;
+	      command_list.clear();
+	      parser.parse(command, command_list);
+	      this->process_command(command_list);
+	      command.clear();
+	      this->check_processes();
 	    }
+	  this->interface->updateStatus(std::vector<int>(), std::vector<int>());
 	  this->check_processes();
 	}
+      this->interface->updateStatus(std::vector<int>(), std::vector<int>());
       this->wait_process();
     }
   catch (const std::exception &e)
@@ -124,12 +143,12 @@ void	Main_Process::display_result(const t_command &command)
     throw std::runtime_error("The log file is not open");
   this->log_file << command.file << " " << info[command.information] << ":" << std::endl;
   std::for_each(command.data.begin(), command.data.end(), [&](const std::string &str) { this->log_file << str << std::endl; });
-  std::for_each(command.data.begin(), command.data.end(), [&](const std::string &str) { std::cout << str << std::endl; });
+  this->interface->addOrder(command);
 }
 
-void		Main_Process::check_processes()
+void			Main_Process::check_processes()
 {
-  t_command	check = { "", Information::PHONE_NUMBER, 0, {} };
+  t_command		check = { "", Information::PHONE_NUMBER, 0, {} };
 
   for (int i = 0; i < static_cast<int>(this->pipe_tab.size()); i++)
     {
@@ -151,11 +170,16 @@ void		Main_Process::process_command(std::vector<t_command> &command_list)
   unsigned int	min;
   unsigned int	thread_it;
   unsigned int	id;
+  std::string	str;
+  std::vector<int>	ids;
+  std::vector<int>	nbr;
 
   for (unsigned int it = 0; it < command_list.size(); it++)
     {
       min = this->thread_nbr * 2;
       this->check_processes();
+      nbr.clear();
+      ids.clear();
       for (int i = 0; i < static_cast<int>(this->process_nbr); i++)
 	{
 	  if (this->activated[i])
@@ -170,13 +194,22 @@ void		Main_Process::process_command(std::vector<t_command> &command_list)
 		}
 	      if (thread_request.file == "end")
 		this->remove_process(i, thread_request);
-	      else if (thread_request.threads < min)
+	      else
 		{
-		  min = thread_request.threads;
-		  thread_it = i;
+		  nbr.push_back(thread_request.threads);
+		  str = this->pipe_tab[i].Get_pathin();
+		  str = str.substr(11);
+		  str = str.substr(0, str.size() - 3);
+		  ids.push_back(std::stoi(str));
+		  if (thread_request.threads < min)
+		    {
+		      min = thread_request.threads;
+		      thread_it = i;
+		    }
 		}
 	    }
 	}
+      this->interface->updateStatus(nbr, ids);
       if (min < (this->thread_nbr * 2))
 	this->pipe_tab[thread_it] << command_list[it];
       else

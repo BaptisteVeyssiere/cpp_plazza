@@ -50,7 +50,8 @@ SRCCIPHER	= src_cipher/main.cpp \
 	src_cipher/CondVar.cpp \
 	src_cipher/Thread.cpp \
 	src_cipher/Finder.cpp \
-	src_cipher/Decrypt.cpp
+	src_cipher/Decrypt.cpp \
+	src_cipher/ui.cpp
 
 SRCDIR	= src
 
