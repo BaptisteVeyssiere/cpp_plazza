@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Sat Apr 29 10:25:31 2017 Nathan Scutari
-// Last update Sun Apr 30 18:32:33 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 21:53:00 2017 Nathan Scutari
 //
 
 #ifndef __UI_HPP__
@@ -38,6 +38,7 @@ private:
   TTF_Font	*font;
   int		threads;
   std::vector<t_order>	orders;
+  std::vector<SDL_Surface *>	status;
 
 private:
   Ui(Ui &);
@@ -51,6 +52,9 @@ private:
   void				print_orders(void);
   void				updateOrderSize(t_order &);
   void				print_order_nbr(int, int);
+  void				print_status(void);
+  void				clearStatus(void);
+  void				updateProcessStatus(int, std::vector<int> &, std::vector<int> &);
 
 public:
   Ui(int);
@@ -58,6 +62,7 @@ public:
 
   std::string	refresh(void);
   void		addOrder(const t_command &);
+  void		updateStatus(std::vector<int>, std::vector<int>);
 };
 
 #endif // !__UI_HPP__

@@ -5,14 +5,14 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Sat Apr 29 10:28:02 2017 Nathan Scutari
-// Last update Sun Apr 30 20:36:01 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 21:55:34 2017 Nathan Scutari
 //
 
 #include <iostream>
 #include "ui.hpp"
 
 Ui::Ui(int _threads)
-  : win(NULL), main(NULL), txt(NULL), separator(NULL), last_event(0), input(""), font(), threads(_threads), orders()
+  : win(NULL), main(NULL), txt(NULL), separator(NULL), last_event(0), input(""), font(), threads(_threads), orders(), status()
 {
   char		center[] = "SDL_VIDEO_WINDOW_POS=center";
 
@@ -217,6 +217,55 @@ void	Ui::print_order_nbr(int i, int y)
     }
 }
 
+void	Ui::updateProcessStatus(int i, std::vector<int> &p_thread, std::vector<int> &p_id)
+{
+  SDL_Color	bg = {255, 255, 255, 255};
+  SDL_Color	head = {180, 0, 0, 255};
+  SDL_Color	black = {0, 0, 0, 255};
+  std::string	tmp;
+  SDL_Surface	*temp;
+  int		queue;
+
+  tmp = "Process " + std::to_string(p_id[i]) + ":";
+  if ((temp = TTF_RenderText_Shaded(font, tmp.c_str(), head, bg)) == NULL)
+    throw std::runtime_error("SDL surface allocation failed");
+  status.push_back(temp);
+  queue = (p_thread[i] >= 4) ? p_thread[i] - 4 : 0;
+  tmp = "Orders in queue: " + std::to_string(queue);
+  if ((temp = TTF_RenderText_Shaded(font, tmp.c_str(), black, bg)) == NULL)
+    throw std::runtime_error("SDL surface allocation failed");
+  status.push_back(temp);
+  tmp = "Threads running: " + std::to_string(p_thread[i] - queue);
+  if ((temp = TTF_RenderText_Shaded(font, tmp.c_str(), black, bg)) == NULL)
+    throw std::runtime_error("SDL surface allocation failed");
+  status.push_back(temp);
+}
+
+void	Ui::clearStatus()
+{
+  for (int i = 0 ; i < static_cast<int>(status.size()) ; ++i)
+    {
+      if (status[i])
+	SDL_FreeSurface(status[i]);
+    }
+  status.clear();
+}
+
+void	Ui::updateStatus(std::vector<int> p_thread, std::vector<int> p_id)
+{
+  SDL_Color	bg = {255, 255, 255, 255};
+  SDL_Color	head = {0, 0, 180, 255};
+  std::string	tmp;
+  SDL_Surface	*temp;
+
+  clearStatus();
+  tmp = "Processes alive: " + p_thread.size();
+  if ((temp = TTF_RenderText_Shaded(font, tmp.c_str(), head, bg)) == NULL)
+    throw std::runtime_error("SDL surface allocation failed");
+  for (int i = 0 ; i < static_cast<int>(p_thread.size()) ; ++i)
+    updateProcessStatus(i, p_thread, p_id);
+}
+
 void	Ui::print_orders(void)
 {
   int		y;
@@ -226,6 +275,26 @@ void	Ui::print_orders(void)
     {
       print_order_nbr(i, y);
       y -= (orders[i].h + 20);
+    }
+}
+
+void	Ui::print_status(void)
+{
+  SDL_Rect	pos;
+
+  if (status.size() == 0)
+    return;
+  pos.x = 981;
+  pos.y = 10;
+  SDL_BlitSurface(status[0], NULL, win, &pos);
+  pos.y = static_cast<short>(pos.y + 20);
+  for (int i = 1 ; i < static_cast<int>(status.size()) ; ++i)
+    {
+      SDL_BlitSurface(status[i], NULL, win, &pos);
+      if (i % 3 == 0)
+	pos.y = static_cast<short>(pos.y + 20);
+      else
+	pos.y = static_cast<short>(pos.y + 5);
     }
 }
 
@@ -241,6 +310,7 @@ std::string	Ui::refresh(void)
     }
   print_txt();
   print_orders();
+  print_status();
   SDL_Flip(win);
   return (ret);
 }
