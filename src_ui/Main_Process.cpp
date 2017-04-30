@@ -5,15 +5,15 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 20:44:08 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 22:38:59 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process_ui.hpp"
 
-Main_Process::Main_Process(unsigned int nbr)
-  : pattern(nbr), thread_nbr(nbr), process_nbr(0), pipe_tab(), activated(), pid(), log_file(), interface(NULL)
+Main_Process::Main_Process(unsigned int _nbr)
+  : pattern(_nbr), thread_nbr(_nbr), process_nbr(0), pipe_tab(), activated(), pid(), log_file(), interface(NULL)
 {
-  this->interface = new Ui(nbr);
+  this->interface = new Ui(_nbr);
   this->create_new_process();
   this->log_file.open("logs.txt");
 }
@@ -144,9 +144,9 @@ void	Main_Process::display_result(const t_command &command)
   this->interface->addOrder(command);
 }
 
-void		Main_Process::check_processes()
+void			Main_Process::check_processes()
 {
-  t_command	check = { "", Information::PHONE_NUMBER, 0, {} };
+  t_command		check = { "", Information::PHONE_NUMBER, 0, {} };
 
   for (int i = 0; i < static_cast<int>(this->pipe_tab.size()); i++)
     {
@@ -168,6 +168,9 @@ void		Main_Process::process_command(std::vector<t_command> &command_list)
   unsigned int	min;
   unsigned int	thread_it;
   unsigned int	id;
+  std::string	str;
+  std::vector<int>	ids;
+  std::vector<int>	nbr;
 
   for (unsigned int it = 0; it < command_list.size(); it++)
     {
@@ -187,13 +190,24 @@ void		Main_Process::process_command(std::vector<t_command> &command_list)
 		}
 	      if (thread_request.file == "end")
 		this->remove_process(i, thread_request);
-	      else if (thread_request.threads < min)
+	      else
 		{
-		  min = thread_request.threads;
-		  thread_it = i;
+		  nbr.clear();
+		  ids.clear();
+		  nbr.push_back(thread_request.threads);
+		  str = this->pipe_tab[i].Get_pathin();
+		  str = str.substr(11);
+		  str = str.substr(0, str.size() - 3);
+		  ids.push_back(std::stoi(str));
+		  if (thread_request.threads < min)
+		    {
+		      min = thread_request.threads;
+		      thread_it = i;
+		    }
 		}
 	    }
 	}
+      this->interface->updateStatus(nbr, ids);
       if (min < (this->thread_nbr * 2))
 	this->pipe_tab[thread_it] << command_list[it];
       else

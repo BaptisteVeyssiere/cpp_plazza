@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Sat Apr 29 10:28:02 2017 Nathan Scutari
-// Last update Sun Apr 30 22:42:32 2017 Nathan Scutari
+// Last update Sun Apr 30 23:05:48 2017 Nathan Scutari
 //
 
 #include <iostream>
@@ -168,6 +168,40 @@ void	Ui::updateOrderSize(t_order &order)
   order.h = size;
 }
 
+void	Ui::freeFrontOrder()
+{
+  if (orders[0].file)
+    SDL_FreeSurface(orders[0].file);
+  if (orders[0].information)
+    SDL_FreeSurface(orders[0].information);
+  for (int i = 0 ; i < static_cast<int>(orders[0].txt.size()) ; ++i)
+    {
+      if (orders[0].txt[i])
+	SDL_FreeSurface(orders[0].txt[i]);
+    }
+  orders.erase(orders.begin());
+}
+
+void	Ui::releaseOutOfRange()
+{
+  int	x;
+  int	y;
+
+  y = 820;
+  if (orders.size() == 0)
+    return ;
+  x = static_cast<int>(orders.size()) - 1;
+  for (int i = static_cast<int>(orders.size() - 1) ; i >= 0 ; --i)
+    {
+      y -= (orders[i].h + 20);
+      if (y <= 0)
+	break;
+      --x;
+    }
+  for (int i = 0 ; i < x - 1 ; ++i)
+    freeFrontOrder();
+}
+
 void	Ui::addOrder(const t_command &order)
 {
   std::vector<std::string>	info = {"PHONE_NUMBER", "EMAIL_ADDRESS", "IP_ADDRESS"};
@@ -194,6 +228,7 @@ void	Ui::addOrder(const t_command &order)
     }
   updateOrderSize(new_order);
   orders.push_back(new_order);
+  releaseOutOfRange();
 }
 
 void	Ui::print_order_nbr(int i, int y)
@@ -259,9 +294,10 @@ void	Ui::updateStatus(std::vector<int> p_thread, std::vector<int> p_id)
   SDL_Surface	*temp;
 
   clearStatus();
-  tmp = "Processes alive: " + p_thread.size();
+  tmp = "Processes alive: " + std::to_string(p_thread.size());
   if ((temp = TTF_RenderText_Shaded(font, tmp.c_str(), head, bg)) == NULL)
     throw std::runtime_error("SDL surface allocation failed");
+  status.push_back(temp);
   for (int i = 0 ; i < static_cast<int>(p_thread.size()) ; ++i)
     updateProcessStatus(i, p_thread, p_id);
 }
@@ -284,16 +320,18 @@ void	Ui::print_status(void)
 
   if (status.size() == 0)
     return;
-  pos.x = 981;
+  pos.x = 990;
   pos.y = 10;
   SDL_BlitSurface(status[0], NULL, win, &pos);
-  pos.y = static_cast<short>(pos.y + 20);
+  pos.y = static_cast<short>(pos.y + 20 + status[0]->h);
   for (int i = 1 ; i < static_cast<int>(status.size()) ; ++i)
     {
       SDL_BlitSurface(status[i], NULL, win, &pos);
-      pos.y = static_cast<short>(pos.y + 5);
+      pos.y = static_cast<short>(pos.y + 5 + status[0]->h);
       if (i % 3 == 0)
-	pos.y = static_cast<short>(pos.y + 20);
+	pos.y = static_cast<short>(pos.y + 20 + status[0]->h);
+      if (pos.y >= 790)
+	break;
     }
 }
 

@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Sat Apr 29 10:25:31 2017 Nathan Scutari
-// Last update Sun Apr 30 21:53:00 2017 Nathan Scutari
+// Last update Sun Apr 30 23:04:51 2017 Nathan Scutari
 //
 
 #ifndef __UI_HPP__
@@ -55,6 +55,8 @@ private:
   void				print_status(void);
   void				clearStatus(void);
   void				updateProcessStatus(int, std::vector<int> &, std::vector<int> &);
+  void				freeFrontOrder();
+  void				releaseOutOfRange();
 
 public:
   Ui(int);

@@ -219,6 +219,8 @@ void Finder::findMailCiphered(std::vector<std::string> &data, std::vector<char> 
         findCaesarValues(data, mem, analyseC[i].first, Finder::mail);
       }
     }
+    if (data.back() == "Caesar>>")
+      data.pop_back();
   } else if (maxX > maxC) {
     data.push_back("Xor>>");
     for (size_t i = 0; i < analyseX.size(); i++) {
@@ -226,6 +228,8 @@ void Finder::findMailCiphered(std::vector<std::string> &data, std::vector<char> 
         findXorValues(data, mem, analyseX[i].first, Finder::mail);
       }
     }
+    if (data.back() == "Xor>>")
+      data.pop_back();
   } else {
     data.push_back("Caesar>>");
     for (size_t i = 0; i < analyseC.size(); i++) {
@@ -233,12 +237,16 @@ void Finder::findMailCiphered(std::vector<std::string> &data, std::vector<char> 
         findCaesarValues(data, mem, analyseC[i].first, Finder::mail);
       }
     }
+    if (data.back() == "Caesar>>")
+      data.pop_back();
     data.push_back("Xor>>");
     for (size_t i = 0; i < analyseX.size(); i++) {
       if (analyseX[i].second == maxX) {
         findXorValues(data, mem, analyseX[i].first, Finder::mail);
       }
     }
+    if (data.back() == "Xor>>")
+      data.pop_back();
   }
 }
 
@@ -254,6 +262,8 @@ void Finder::findIPCiphered(std::vector<std::string> &data, std::vector<char> co
         findCaesarValues(data, mem, analyseC[i].first, Finder::ip);
       }
     }
+    if (data.back() == "Caesar>>")
+      data.pop_back();
   } else if (maxX > maxC) {
     data.push_back("Xor>>");
     for (size_t i = 0; i < analyseX.size(); i++) {
@@ -261,6 +271,8 @@ void Finder::findIPCiphered(std::vector<std::string> &data, std::vector<char> co
         findXorValues(data, mem, analyseX[i].first, Finder::ip);
       }
     }
+    if (data.back() == "Xor>>")
+      data.pop_back();
   } else {
     data.push_back("Caesar>>");
     for (size_t i = 0; i < analyseC.size(); i++) {
@@ -268,12 +280,16 @@ void Finder::findIPCiphered(std::vector<std::string> &data, std::vector<char> co
         findCaesarValues(data, mem, analyseC[i].first, Finder::ip);
       }
     }
+    if (data.back() == "Caesar>>")
+      data.pop_back();
     data.push_back("Xor>>");
     for (size_t i = 0; i < analyseX.size(); i++) {
       if (analyseX[i].second == maxX) {
         findXorValues(data, mem, analyseX[i].first, Finder::ip);
       }
     }
+    if (data.back() == "Xor>>")
+      data.pop_back();
   }
 }
 
@@ -289,6 +305,8 @@ void Finder::findPhoneCiphered(std::vector<std::string> &data, std::vector<char>
         findCaesarValues(data, mem, analyseC[i].first, Finder::phone);
       }
     }
+    if (data.back() == "Caesar>>")
+      data.pop_back();
   } else if (maxX > maxC) {
     data.push_back("Xor>>");
     for (size_t i = 0; i < analyseX.size(); i++) {
@@ -296,6 +314,8 @@ void Finder::findPhoneCiphered(std::vector<std::string> &data, std::vector<char>
         findXorValues(data, mem, analyseX[i].first, Finder::phone);
       }
     }
+    if (data.back() == "Xor>>")
+      data.pop_back();
   } else {
     data.push_back("Caesar>>");
     for (size_t i = 0; i < analyseC.size(); i++) {
@@ -303,11 +323,15 @@ void Finder::findPhoneCiphered(std::vector<std::string> &data, std::vector<char>
         findCaesarValues(data, mem, analyseC[i].first, Finder::phone);
       }
     }
+    if (data.back() == "Caesar>>")
+      data.pop_back();
     data.push_back("Xor>>");
     for (size_t i = 0; i < analyseX.size(); i++) {
       if (analyseX[i].second == maxX) {
         findXorValues(data, mem, analyseX[i].first, Finder::phone);
       }
     }
+    if (data.back() == "Xor>>")
+      data.pop_back();
   }
 }
