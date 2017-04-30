@@ -15,7 +15,8 @@ Finder::~Finder() {
 
 }
 
-void Finder::findMail(std::vector<std::string> &data, std::string const &mem) {
+void Finder::mail(std::vector<std::string> &data, std::string const& mem)
+{
   std::regex  reg("[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.-]+");
   std::smatch mail;
   std::string content = mem;
@@ -26,8 +27,9 @@ void Finder::findMail(std::vector<std::string> &data, std::string const &mem) {
   }
 }
 
-void Finder::findIP(std::vector<std::string> &data, std::string const &mem) {
-  std::regex  reg("([2][0-5][0-5]|[1][0-9][0-9]|[1-9][0-9]|[0-9])\\.([2][0-5][0-5]|[1][0-9][0-9]|[1-9][0-9]|[0-9])\\.([2][0-5][0-5]|[1][0-9][0-9]|[1-9][0-9]|[0-9])\\.([2][0-5][0-5]|[1][0-9][0-9]|[1-9][0-9]|[0-9])");
+void Finder::ip(std::vector<std::string> &data, std::string const& mem)
+{
+    std::regex  reg("([2][0-5][0-5]|[1][0-9][0-9]|[1-9][0-9]|[0-9])\\.([2][0-5][0-5]|[1][0-9][0-9]|[1-9][0-9]|[0-9])\\.([2][0-5][0-5]|[1][0-9][0-9]|[1-9][0-9]|[0-9])\\.([2][0-5][0-5]|[1][0-9][0-9]|[1-9][0-9]|[0-9])");
   std::smatch ip;
   std::string content = mem;
 
@@ -37,7 +39,8 @@ void Finder::findIP(std::vector<std::string> &data, std::string const &mem) {
   }
 }
 
-void Finder::findPhone(std::vector<std::string> &data, std::string const &mem) {
+void Finder::phone(std::vector<std::string> &data, std::string const& mem)
+{
   std::regex  reg("([0-9]|[0-9] ){10}");
   std::smatch phone;
   std::string content = mem;
@@ -46,6 +49,21 @@ void Finder::findPhone(std::vector<std::string> &data, std::string const &mem) {
     data.push_back(phone.str());
     content = phone.suffix().str();
   }
+}
+
+void Finder::findMail(std::vector<std::string> &data, std::vector<char> const& mem) {
+  std::string tmp(mem.data());
+  mail(data, tmp);
+}
+
+void Finder::findIP(std::vector<std::string> &data, std::vector<char> const& mem) {
+  std::string tmp(mem.data());
+  ip(data, tmp);
+}
+
+void Finder::findPhone(std::vector<std::string> &data, std::vector<char> const& mem) {
+  std::string tmp(mem.data());
+  phone(data, tmp);
 }
 
 long    Finder::matchCount(std::vector<char> const &mem)
@@ -198,27 +216,27 @@ void Finder::findMailCiphered(std::vector<std::string> &data, std::vector<char> 
     data.push_back("Caesar>>");
     for (size_t i = 0; i < analyseC.size(); i++) {
       if (analyseC[i].second == maxC) {
-        findCaesarValues(data, mem, analyseC[i].first, Finder::findMail);
+        findCaesarValues(data, mem, analyseC[i].first, Finder::mail);
       }
     }
   } else if (maxX > maxC) {
     data.push_back("Xor>>");
     for (size_t i = 0; i < analyseX.size(); i++) {
       if (analyseX[i].second == maxX) {
-        findXorValues(data, mem, analyseX[i].first, Finder::findMail);
+        findXorValues(data, mem, analyseX[i].first, Finder::mail);
       }
     }
   } else {
     data.push_back("Caesar>>");
     for (size_t i = 0; i < analyseC.size(); i++) {
       if (analyseC[i].second == maxC) {
-        findCaesarValues(data, mem, analyseC[i].first, Finder::findMail);
+        findCaesarValues(data, mem, analyseC[i].first, Finder::mail);
       }
     }
     data.push_back("Xor>>");
     for (size_t i = 0; i < analyseX.size(); i++) {
       if (analyseX[i].second == maxX) {
-        findXorValues(data, mem, analyseX[i].first, Finder::findMail);
+        findXorValues(data, mem, analyseX[i].first, Finder::mail);
       }
     }
   }
@@ -233,27 +251,27 @@ void Finder::findIPCiphered(std::vector<std::string> &data, std::vector<char> co
     data.push_back("Caesar>>");
     for (size_t i = 0; i < analyseC.size(); i++) {
       if (analyseC[i].second == maxC) {
-        findCaesarValues(data, mem, analyseC[i].first, Finder::findIP);
+        findCaesarValues(data, mem, analyseC[i].first, Finder::ip);
       }
     }
   } else if (maxX > maxC) {
     data.push_back("Xor>>");
     for (size_t i = 0; i < analyseX.size(); i++) {
       if (analyseX[i].second == maxX) {
-        findXorValues(data, mem, analyseX[i].first, Finder::findIP);
+        findXorValues(data, mem, analyseX[i].first, Finder::ip);
       }
     }
   } else {
     data.push_back("Caesar>>");
     for (size_t i = 0; i < analyseC.size(); i++) {
       if (analyseC[i].second == maxC) {
-        findCaesarValues(data, mem, analyseC[i].first, Finder::findIP);
+        findCaesarValues(data, mem, analyseC[i].first, Finder::ip);
       }
     }
     data.push_back("Xor>>");
     for (size_t i = 0; i < analyseX.size(); i++) {
       if (analyseX[i].second == maxX) {
-        findXorValues(data, mem, analyseX[i].first, Finder::findIP);
+        findXorValues(data, mem, analyseX[i].first, Finder::ip);
       }
     }
   }
@@ -268,27 +286,27 @@ void Finder::findPhoneCiphered(std::vector<std::string> &data, std::vector<char>
     data.push_back("Caesar>>");
     for (size_t i = 0; i < analyseC.size(); i++) {
       if (analyseC[i].second == maxC) {
-        findCaesarValues(data, mem, analyseC[i].first, Finder::findPhone);
+        findCaesarValues(data, mem, analyseC[i].first, Finder::phone);
       }
     }
   } else if (maxX > maxC) {
     data.push_back("Xor>>");
     for (size_t i = 0; i < analyseX.size(); i++) {
       if (analyseX[i].second == maxX) {
-        findXorValues(data, mem, analyseX[i].first, Finder::findPhone);
+        findXorValues(data, mem, analyseX[i].first, Finder::phone);
       }
     }
   } else {
     data.push_back("Caesar>>");
     for (size_t i = 0; i < analyseC.size(); i++) {
       if (analyseC[i].second == maxC) {
-        findCaesarValues(data, mem, analyseC[i].first, Finder::findPhone);
+        findCaesarValues(data, mem, analyseC[i].first, Finder::phone);
       }
     }
     data.push_back("Xor>>");
     for (size_t i = 0; i < analyseX.size(); i++) {
       if (analyseX[i].second == maxX) {
-        findXorValues(data, mem, analyseX[i].first, Finder::findPhone);
+        findXorValues(data, mem, analyseX[i].first, Finder::phone);
       }
     }
   }

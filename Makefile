@@ -40,17 +40,35 @@ SRCUI	= src_ui/main.cpp \
 	src_ui/Decrypt.cpp \
 	src_ui/Thread.cpp
 
+SRCCIPHER	= src_cipher/main.cpp \
+	src_cipher/Parser.cpp \
+	src_cipher/Process.cpp \
+	src_cipher/Mutex.cpp \
+	src_cipher/Main_Process.cpp \
+	src_cipher/Named_pipe.cpp \
+	src_cipher/t_pool.cpp \
+	src_cipher/CondVar.cpp \
+	src_cipher/Thread.cpp \
+	src_cipher/Finder.cpp \
+	src_cipher/Decrypt.cpp
+
 SRCDIR	= src
 
 SRCUIDIR	= src_ui
+
+SRCCIPHERDIR	= src_cipher
 
 OBJDIR	= obj
 
 OBJUIDIR	= obj_ui
 
+OBJCIPHERDIR	= obj_cipher
+
 OBJ	= $(SRC:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 
 OBJUI	= $(SRCUI:$(SRCUIDIR)/%.cpp=$(OBJUIDIR)/%.o)
+
+OBJCIPHER	= $(SRCCIPHER:$(SRCCIPHERDIR)/%.cpp=$(OBJCIPHERDIR)/%.o)
 
 LDFLAGS	= -pthread
 
@@ -66,6 +84,10 @@ ui: $(OBJUI)
 	@$(CXX) $(LDFLAGSUI) -o $(NAME) $(OBJUI)
 	@echo "Linking complete!"
 
+cipher: $(OBJCIPHER)
+	@$(CXX) $(LDFLAGSUI) -o $(NAME) $(OBJCIPHER)
+	@echo "Linking complete!"
+
 $(OBJ): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	@$(MKDIR) $(OBJDIR)
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -76,11 +98,17 @@ $(OBJUI): $(OBJUIDIR)/%.o : $(SRCUIDIR)/%.cpp
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
 	@echo "Compiled "$<" successfully!"
 
-all: $(NAME) ui
+$(OBJCIPHER): $(OBJCIPHERDIR)/%.o : $(SRCCIPHERDIR)/%.cpp
+	@$(MKDIR) $(OBJCIPHERDIR)
+	@$(CXX) $(CXXFLAGS) -c $< -o $@
+	@echo "Compiled "$<" successfully!"
+
+all: $(NAME) ui cipher
 
 clean:
 	@$(RM) $(OBJ)
 	@$(RM) $(OBJUI)
+	@$(RM) $(OBJCIPHER)
 	@echo "Cleanup complete!"
 
 fclean: clean
@@ -89,4 +117,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re ui
+.PHONY: all clean fclean re ui cipher

@@ -20,10 +20,14 @@ private:
   static void findCaesarValues(std::vector<std::string> &data, std::vector<char> const& mem, unsigned char key, std::function<void(std::vector<std::string> &, std::string const &)> finding);
   static void findXorValues(std::vector<std::string> &data, std::vector<char> const& mem, std::vector<unsigned char> key, std::function<void(std::vector<std::string> &, std::string const &)> finding);
 
+  static void mail(std::vector<std::string> &data, std::string const& mem);
+  static void ip(std::vector<std::string> &data, std::string const& mem);
+  static void phone(std::vector<std::string> &data, std::string const& mem);
+
 public:
-  static void findMail(std::vector<std::string> &data, std::string const& mem);
-  static void findIP(std::vector<std::string> &data, std::string const& mem);
-  static void findPhone(std::vector<std::string> &data, std::string const& mem);
+  static void findMail(std::vector<std::string> &data, std::vector<char> const& mem);
+  static void findIP(std::vector<std::string> &data, std::vector<char> const& mem);
+  static void findPhone(std::vector<std::string> &data, std::vector<char> const& mem);
 
   static void findMailCiphered(std::vector<std::string> &data, std::vector<char> const& mem);
   static void findIPCiphered(std::vector<std::string> &data, std::vector<char> const& mem);

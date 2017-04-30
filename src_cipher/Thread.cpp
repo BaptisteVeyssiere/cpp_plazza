@@ -5,15 +5,15 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Sun Apr 30 04:10:36 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 19:22:10 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 19:13:56 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 #include <regex>
-#include "Finder.hpp"
 #include "Thread.hpp"
+#include "Finder.hpp"
 
 Thread::Thread(std::shared_ptr<t_data> data) : thread(new std::thread(&Thread::mainLoop, this, data)) {
 }
@@ -40,13 +40,13 @@ void Thread::findSomething(std::vector<std::string> &data, std::vector<char> con
   switch (info)
     {
     case Information::EMAIL_ADDRESS :
-      Finder::findMail(data, mem);
+      Finder::findMailCiphered(data, mem);
       break;
     case Information::IP_ADDRESS :
-      Finder::findIP(data, mem);
+      Finder::findIPCiphered(data, mem);
       break;
     case Information::PHONE_NUMBER :
-      Finder::findPhone(data, mem);
+      Finder::findPhoneCiphered(data, mem);
       break;
     default:
       break;
@@ -64,7 +64,7 @@ std::vector<char> Thread::getFileData(std::string const& path)
             if (!file.fail()) {
                 file.read(fileMem.data(), static_cast<std::streamsize>(size));
                 if (!file.fail()) {
-		  return (fileMem);
+                    return (fileMem);
                 }
             }
         }

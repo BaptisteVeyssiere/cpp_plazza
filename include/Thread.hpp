@@ -29,8 +29,8 @@ public:
 
 private:
 
-  std::string getFileData(std::string const& path);
-  void findSomething(std::vector<std::string> &data, std::string const& mem, Information const& info);
+  std::vector<char> getFileData(std::string const& path);
+  void findSomething(std::vector<std::string> &data, std::vector<char> const& mem, Information const& info);
   void mainLoop(std::shared_ptr<t_data> data);
 
 };

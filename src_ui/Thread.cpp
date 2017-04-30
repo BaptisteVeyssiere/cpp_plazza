@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Sun Apr 30 04:10:36 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 17:13:55 2017 ilyas semmaoui
+// Last update Sun Apr 30 19:22:10 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -34,7 +34,7 @@ void Thread::detach() {
     thread->detach();
 }
 
-void Thread::findSomething(std::vector<std::string> &data, std::string const& mem,
+void Thread::findSomething(std::vector<std::string> &data, std::vector<char> const& mem,
 			   Information const& info)
 {
   switch (info)
@@ -53,7 +53,7 @@ void Thread::findSomething(std::vector<std::string> &data, std::string const& me
     }
 }
 
-std::string Thread::getFileData(std::string const& path)
+std::vector<char> Thread::getFileData(std::string const& path)
 {
     std::ifstream   file(path, std::ios::in | std::ios::ate);
     if (file.is_open()) {
@@ -64,16 +64,16 @@ std::string Thread::getFileData(std::string const& path)
             if (!file.fail()) {
                 file.read(fileMem.data(), static_cast<std::streamsize>(size));
                 if (!file.fail()) {
-                    return (std::string(fileMem.data()));
+		  return (fileMem);
                 }
             }
         }
         file.close();
     }
     std::cerr << "Something went wrong with the given file : " << path << std::endl;
-    return (std::string(""));
+    return (std::vector<char>());
 }
-#include <stdexcept>
+
 void Thread::mainLoop(std::shared_ptr<t_data> data) {
     while (1) {
         while (!data->ready) {
@@ -81,8 +81,8 @@ void Thread::mainLoop(std::shared_ptr<t_data> data) {
         }
         data->running = 1;
         data->ready = 0;
-        std::string mem = getFileData(data->command.file);
-        if (mem != "") {
+        std::vector<char> mem = getFileData(data->command.file);
+        if (mem.size() > 1) {
 	  std::vector<std::string> fileData;
 	  findSomething(fileData, mem, data->command.information);
 	  std::for_each(fileData.begin(), fileData.end(),
