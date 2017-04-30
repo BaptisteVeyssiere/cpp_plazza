@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Sat Apr 29 10:28:02 2017 Nathan Scutari
-// Last update Sun Apr 30 21:55:34 2017 Nathan Scutari
+// Last update Sun Apr 30 22:42:32 2017 Nathan Scutari
 //
 
 #include <iostream>
@@ -291,10 +291,9 @@ void	Ui::print_status(void)
   for (int i = 1 ; i < static_cast<int>(status.size()) ; ++i)
     {
       SDL_BlitSurface(status[i], NULL, win, &pos);
+      pos.y = static_cast<short>(pos.y + 5);
       if (i % 3 == 0)
 	pos.y = static_cast<short>(pos.y + 20);
-      else
-	pos.y = static_cast<short>(pos.y + 5);
     }
 }
 
