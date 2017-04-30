@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Sat Apr 29 10:28:02 2017 Nathan Scutari
-// Last update Sun Apr 30 21:55:34 2017 Nathan Scutari
+// Last update Sun Apr 30 22:01:55 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -259,9 +259,10 @@ void	Ui::updateStatus(std::vector<int> p_thread, std::vector<int> p_id)
   SDL_Surface	*temp;
 
   clearStatus();
-  tmp = "Processes alive: " + p_thread.size();
+  tmp = "Processes alive: " + std::to_string(p_thread.size());
   if ((temp = TTF_RenderText_Shaded(font, tmp.c_str(), head, bg)) == NULL)
     throw std::runtime_error("SDL surface allocation failed");
+  status.push_back(temp);
   for (int i = 0 ; i < static_cast<int>(p_thread.size()) ; ++i)
     updateProcessStatus(i, p_thread, p_id);
 }
@@ -284,17 +285,17 @@ void	Ui::print_status(void)
 
   if (status.size() == 0)
     return;
-  pos.x = 981;
+  pos.x = 990;
   pos.y = 10;
   SDL_BlitSurface(status[0], NULL, win, &pos);
-  pos.y = static_cast<short>(pos.y + 20);
+  pos.y = static_cast<short>(pos.y + 20 + status[0]->h);
   for (int i = 1 ; i < static_cast<int>(status.size()) ; ++i)
     {
       SDL_BlitSurface(status[i], NULL, win, &pos);
       if (i % 3 == 0)
-	pos.y = static_cast<short>(pos.y + 20);
+	pos.y = static_cast<short>(pos.y + 20 + status[0]->h);
       else
-	pos.y = static_cast<short>(pos.y + 5);
+	pos.y = static_cast<short>(pos.y + 5 + status[0]->h);
     }
 }
 
