@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Thu Apr 27 00:21:57 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 04:08:22 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 15:46:38 2017 Baptiste Veyssiere
 //
 
 #ifndef __MAIN_PROCESS_HPP__
@@ -13,6 +13,8 @@
 
 # include <iostream>
 # include <unistd.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 # include "Named_pipe.hpp"
 # include "Parser.hpp"
 # include "Process.hpp"
@@ -27,6 +29,7 @@ private:
   unsigned int			process_nbr;
   std::vector<Named_pipe>	pipe_tab;
   std::vector<bool>		activated;
+  std::vector<pid_t>		pid;
 
 private:
   Main_Process(const Main_Process &);

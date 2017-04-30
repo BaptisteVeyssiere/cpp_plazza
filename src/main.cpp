@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Thu Apr 13 18:08:46 2017 Baptiste Veyssiere
-// Last update Fri Apr 28 15:32:30 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 16:42:25 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -20,7 +20,7 @@ static int	init(unsigned int thread_nbr)
   return (main_process.loop());
 }
 
-int		main(int ac, char **av)
+int		main(int ac, char **av, char **env)
 {
   int		thread_nbr;
   std::regex	pattern("^[0-9]+$");
@@ -28,7 +28,7 @@ int		main(int ac, char **av)
   std::signal(SIGINT, SIG_IGN);
   std::signal(SIGTERM, SIG_IGN);
   if (ac < 2 || ac > 2 || !(std::regex_match(av[1], pattern)) ||
-      (thread_nbr = std::stoi(av[1])) < 1)
+      (thread_nbr = std::stoi(av[1])) < 1 || env == NULL || env[0] == NULL)
     {
       std::cerr << "Usage: ./plazza nbr_of_thread" << std::endl;
       return (1);

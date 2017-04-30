@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 04:38:14 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 15:47:06 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
@@ -13,7 +13,7 @@
 int	ok = 0;
 
 Main_Process::Main_Process(unsigned int nbr)
-  : pattern(nbr), thread_nbr(nbr), process_nbr(0), pipe_tab(), activated()
+  : pattern(nbr), thread_nbr(nbr), process_nbr(0), pipe_tab(), activated(), pid()
 {
   this->create_new_process();
 }
@@ -22,8 +22,13 @@ Main_Process::~Main_Process() {}
 
 void	Main_Process::wait_process()
 {
+  int	status;
+
   while (this->process_nbr > 0)
     this->check_processes();
+  while (this->pid.size() > 0)
+    if (waitpid(this->pid[0], &status, WNOHANG))
+      this->pid.erase(this->pid.begin());
   std::for_each(this->pipe_tab.begin(), this->pipe_tab.end(),
 		[&](Named_pipe &fifo) { fifo.release(); });
 }
@@ -89,14 +94,16 @@ unsigned int	Main_Process::create_new_process()
   unsigned int				id;
   std::string				fifoname;
   std::vector<Named_pipe>::iterator	it;
+  pid_t					ret;
 
   id = 0;
   while (id < this->pipe_tab.size() && this->activated[id])
     ++id;
-  if (this->pattern.clone(id))
+  if ((ret = this->pattern.clone(id)) == 0)
     exit(0);
   this->Add_pipe(id);
   ++this->process_nbr;
+  this->pid.push_back(ret);
   return (id);
 }
 
