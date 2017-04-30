@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Sat Apr 29 10:28:02 2017 Nathan Scutari
-// Last update Sun Apr 30 19:30:29 2017 Nathan Scutari
+// Last update Sun Apr 30 19:31:22 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -168,22 +168,22 @@ void	Ui::addOrder(const t_command &order)
   std::vector<std::string>	info = {"PHONE_NUMBER", "EMAIL_ADDRESS", "IP_ADDRESS"};
   std::string	tmp;
   SDL_Color	head = {0, 0, 170, 255};
-  SDL_Color	txt = {0, 0, 0, 255};
+  SDL_Color	txte = {0, 0, 0, 255};
   SDL_Color	bg = {255, 255, 255, 255};
   SDL_Surface	*tmps;
   t_order	new_order;
 
   tmp = "File: " + order.file;
-  if ((new_order.file = TTF_RenderText_Shaded(font, tmp.c_str(), txt, bg)) == NULL)
+  if ((new_order.file = TTF_RenderText_Shaded(font, tmp.c_str(), head, bg)) == NULL)
     throw std::runtime_error("SDL surface allocation failed");
   tmp = "Information: " + info[static_cast<int>(order.information)];
-  if ((new_order.information = TTF_RenderText_Shaded(font, tmp.c_str(), txt, bg)) == NULL)
+  if ((new_order.information = TTF_RenderText_Shaded(font, tmp.c_str(), head, bg)) == NULL)
     throw std::runtime_error("SDL surface allocation failed");
   info = get_order_lines(order.data);
   info[0] = "Result: " + info[0];
   for (int i = 0 ;  i < static_cast<int>(info.size()) ; ++i)
     {
-      if ((tmps = TTF_RenderText_Shaded(font, info[i].c_str(), txt, bg)) == NULL)
+      if ((tmps = TTF_RenderText_Shaded(font, info[i].c_str(), txte, bg)) == NULL)
 	throw std::runtime_error("SDL surface allocation failed");
       new_order.txt.push_back(tmps);
     }

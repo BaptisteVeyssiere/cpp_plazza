@@ -103,7 +103,7 @@ $(OBJCIPHER): $(OBJCIPHERDIR)/%.o : $(SRCCIPHERDIR)/%.cpp
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
 	@echo "Compiled "$<" successfully!"
 
-all: $(NAME) ui cipher
+all: $(NAME)
 
 clean:
 	@$(RM) $(OBJ)

@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 18:22:00 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 19:37:32 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process_ui.hpp"
@@ -43,26 +43,41 @@ int	Main_Process::loop()
   std::string			command;
   std::streambuf		*pbuf;
   std::streamsize		size;
+  std::string			str;
 
   std::cin.sync_with_stdio(false);
   try
     {
       pbuf = std::cin.rdbuf();
       size = pbuf->in_avail();
-      if (size > 0)
+      while (size > 0)
 	{
-	  while (getline(std::cin, command))
+	  if (getline(std::cin, command))
 	    {
 	      parser.parse(command, command_list);
 	      this->process_command(command_list);
+	      if ((str = this->interface.refresh()) == "exit")
+		break;
 	      command.clear();
 	      command_list.clear();
 	      this->check_processes();
 	    }
+	  pbuf = std::cin.rdbuf();
+	  size = pbuf->in_avail();
 	}
       while (1)
-	if (this->interface.refresh() == "exit")
+	if ((str = this->interface.refresh()) == "exit")
 	  break;
+	else if (str != "")
+	  {
+	    command_list.clear();
+	    parser.parse(str, command_list);
+	    this->process_command(command_list);
+	    if ((str = this->interface.refresh()) == "exit")
+	      break;
+	    str.clear();
+	    this->check_processes();
+	  }
       this->wait_process();
     }
   catch (const std::exception &e)
