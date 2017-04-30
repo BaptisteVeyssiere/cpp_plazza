@@ -5,14 +5,14 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Sat Apr 29 10:28:02 2017 Nathan Scutari
-// Last update Sun Apr 30 19:26:19 2017 Nathan Scutari
+// Last update Sun Apr 30 19:30:29 2017 Nathan Scutari
 //
 
 #include <iostream>
 #include "ui.hpp"
 
-Ui::Ui(int threads)
-  : win(NULL), main(NULL), txt(NULL), separator(NULL), input(""), last_event(0), font(), threads(threads), orders()
+Ui::Ui(int _threads)
+  : win(NULL), main(NULL), txt(NULL), separator(NULL), last_event(0), input(""), font(), threads(_threads), orders()
 {
   char		center[] = "SDL_VIDEO_WINDOW_POS=center";
 
@@ -21,6 +21,7 @@ Ui::Ui(int threads)
     throw std::runtime_error("SDL / TTF Init failed");
   SDL_EnableUNICODE(1);
   SDL_EnableKeyRepeat(0, 0);
+  SDL_putenv(center);
   if ((win = SDL_SetVideoMode(1280, 900, 32,
 			      SDL_HWSURFACE | SDL_DOUBLEBUF)) == NULL)
     throw std::runtime_error("SDL failed to open window");
@@ -64,8 +65,8 @@ void	Ui::init_main_surface()
 
 void	Ui::update_text_surface(bool diff)
 {
-  SDL_Color	color = {0, 0, 0};
-  SDL_Color	bg = {255, 255, 255};
+  SDL_Color	color = {0, 0, 0, 255};
+  SDL_Color	bg = {255, 255, 255, 255};
 
   if (diff)
     {
@@ -91,7 +92,7 @@ int	Ui::get_user_input(void)
 	}
       else if (event.key.keysym.unicode >= 32 && event.key.keysym.unicode <= 255 &&
 	       last_event != event.key.keysym.unicode)
-	input += event.key.keysym.unicode;
+	input += static_cast<char>(event.key.keysym.unicode);
       else if (event.key.keysym.unicode == '\b' && input.size() > 0 &&
 	       last_event != event.key.keysym.unicode)
 	input.pop_back();
@@ -119,10 +120,10 @@ void	Ui::print_txt()
   SDL_BlitSurface(txt, NULL, win, &pos);
 }
 
-std::vector<std::string>	Ui::get_order_lines(std::vector<std::string> &data)
+std::vector<std::string>	Ui::get_order_lines(const std::vector<std::string> &data)
 {
   bool				empty = false;
-  std::vector<std::string>	txt;
+  std::vector<std::string>	txte;
   std::string			line;
   int				pos = 0;
 
@@ -131,7 +132,7 @@ std::vector<std::string>	Ui::get_order_lines(std::vector<std::string> &data)
       line.clear();
       while (line.size() <= 90)
 	{
-	  if (pos >= data.size())
+	  if (pos >= static_cast<int>(data.size()))
 	    {
 	      empty = true;
 	      break;
@@ -144,9 +145,9 @@ std::vector<std::string>	Ui::get_order_lines(std::vector<std::string> &data)
 	  else
 	    break;
 	}
-      txt.push_back(line);
+      txte.push_back(line);
     }
-  return (txt);
+  return (txte);
 }
 
 void	Ui::updateOrderSize(t_order &order)
@@ -155,20 +156,20 @@ void	Ui::updateOrderSize(t_order &order)
   int	size;
 
   size = order.file->h + 5;
-  data = order.txt.size() - 1;
+  data = static_cast<int>(order.txt.size()) - 1;
   if (data < 0)
     data = 0;
   size += data * 5 + (data + 1) * order.file->h;
   order.h = size;
 }
 
-void	Ui::addOrder(t_command &order)
+void	Ui::addOrder(const t_command &order)
 {
   std::vector<std::string>	info = {"PHONE_NUMBER", "EMAIL_ADDRESS", "IP_ADDRESS"};
   std::string	tmp;
-  SDL_Color	head = {0, 0, 170};
-  SDL_Color	txt = {0, 0, 0};
-  SDL_Color	bg = {255, 255, 255};
+  SDL_Color	head = {0, 0, 170, 255};
+  SDL_Color	txt = {0, 0, 0, 255};
+  SDL_Color	bg = {255, 255, 255, 255};
   SDL_Surface	*tmps;
   t_order	new_order;
 
@@ -180,7 +181,7 @@ void	Ui::addOrder(t_command &order)
     throw std::runtime_error("SDL surface allocation failed");
   info = get_order_lines(order.data);
   info[0] = "Result: " + info[0];
-  for (int i = 0 ;  i < info.size() ; ++i)
+  for (int i = 0 ;  i < static_cast<int>(info.size()) ; ++i)
     {
       if ((tmps = TTF_RenderText_Shaded(font, info[i].c_str(), txt, bg)) == NULL)
 	throw std::runtime_error("SDL surface allocation failed");
@@ -196,29 +197,27 @@ void	Ui::print_order_nbr(int i, int y)
 
   y -= (orders[i].h + 10);
   pos.x = 0;
-  pos.y = y;
+  pos.y = static_cast<short>(y);
   SDL_BlitSurface(separator, NULL, win, &pos);
-  pos.y += 10;
+  pos.y = static_cast<short>(pos.y + 10);
   SDL_BlitSurface(orders[i].file, NULL, win, &pos);
-  pos.x = orders[i].file->w + 20;
+  pos.x = static_cast<short>(orders[i].file->w + 20);
   SDL_BlitSurface(orders[i].information, NULL, win, &pos);
   pos.x = 0;
-  pos.y += orders[i].file->h + 5;
-  for (int x = 0 ; x < orders[i].txt.size() ; ++x)
+  pos.y = static_cast<short>(pos.y + orders[i].file->h + 5);
+  for (int x = 0 ; x < static_cast<int>(orders[i].txt.size()); ++x)
     {
       SDL_BlitSurface(orders[i].txt[x], NULL, win, &pos);
-      pos.y += orders[0].file->h + 5;
+      pos.y = static_cast<short>(pos.y + orders[0].file->h + 5);
     }
 }
 
 void	Ui::print_orders(void)
 {
   int		y;
-  SDL_Rect	pos;
 
-  pos.x = 0;
   y = 820;
-  for (int i = orders.size() - 1 ; i >= 0 ; --i)
+  for (int i = static_cast<int>(orders.size() - 1); i >= 0 ; --i)
     {
       print_order_nbr(i, y);
       y -= (orders[i].h + 20);

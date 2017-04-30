@@ -5,11 +5,11 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Thu Apr 27 00:21:57 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 17:53:58 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 18:21:35 2017 Baptiste Veyssiere
 //
 
-#ifndef __MAIN_PROCESS_HPP__
-# define __MAIN_PROCESS_HPP__
+#ifndef __MAIN_PROCESS_UI_HPP__
+# define __MAIN_PROCESS_UI_HPP__
 
 # include <iostream>
 # include <unistd.h>
@@ -18,6 +18,7 @@
 # include "Named_pipe.hpp"
 # include "Parser.hpp"
 # include "Process.hpp"
+# include "ui.hpp"
 
 class	Main_Process
 {
@@ -29,6 +30,7 @@ private:
   std::vector<bool>		activated;
   std::vector<pid_t>		pid;
   std::ofstream			log_file;
+  Ui				interface;
 
 private:
   Main_Process(const Main_Process &);
@@ -50,4 +52,4 @@ private:
   void		wait_process();
 };
 
-#endif // !__MAIN_PROCESS_HPP__
+#endif // !__MAIN_PROCESS_UI_HPP__
