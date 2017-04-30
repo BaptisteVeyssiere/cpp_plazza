@@ -11,7 +11,7 @@ NAME	= plazza
 
 RM	= rm -f
 
-CXX	= g++ -g
+CXX	= g++
 
 MKDIR	= mkdir -p
 

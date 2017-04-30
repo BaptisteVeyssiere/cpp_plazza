@@ -5,12 +5,10 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 15:47:06 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 16:53:00 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
-
-int	ok = 0;
 
 Main_Process::Main_Process(unsigned int nbr)
   : pattern(nbr), thread_nbr(nbr), process_nbr(0), pipe_tab(), activated(), pid()
@@ -86,7 +84,6 @@ void	Main_Process::Add_pipe(unsigned int id)
       this->activated.push_back(true);
       this->pipe_tab.push_back(pipe);
     }
-
 }
 
 unsigned int	Main_Process::create_new_process()
@@ -112,7 +109,6 @@ void	Main_Process::remove_process(int i, const t_command &command)
   this->pipe_tab[i] << command;
   this->activated[i] = false;
   --this->process_nbr;
-  std::cout << "Nbr of processes " << this->process_nbr << std::endl;
 }
 
 void	Main_Process::display_result(const t_command &command) const
@@ -121,8 +117,6 @@ void	Main_Process::display_result(const t_command &command) const
 
   std::cout << command.file << " " << info[command.information] << ":" << std::endl;
   std::for_each(command.data.begin(), command.data.end(), [&](const std::string &str) { std::cout << str << std::endl; });
-  ++ok;
-  std::cout << ok << " commands received" << std::endl;
 }
 
 void		Main_Process::check_processes()
@@ -149,12 +143,9 @@ void		Main_Process::process_command(std::vector<t_command> &command_list)
   unsigned int	min;
   unsigned int	thread_it;
   unsigned int	id;
-  static int	ko = 0;
 
   for (unsigned int it = 0; it < command_list.size(); it++)
     {
-      ++ko;
-      std::cout << ko << " command sent" << std::endl;
       min = this->thread_nbr * 2;
       this->check_processes();
       for (int i = 0; i < static_cast<int>(this->process_nbr); i++)
