@@ -13,9 +13,10 @@ Decrypt::~Decrypt() {
 }
 
 void Decrypt::xorDecrypt(std::vector<char> &data, std::vector<unsigned char> const &key){
-  int n = 0;
-  for (int i = 0; i < data.size(); i++) {
-    if ((data[i] ^= key[n]) == 0) {
+  unsigned int n = 0;
+  for (unsigned int i = 0; i < data.size(); i++) {
+    char tmp = data[i] ^ static_cast<char>(key[n]);
+    if ((data[i] = tmp) == 0) {
       data[0] = '\0';
       break;
     }
@@ -26,7 +27,7 @@ void Decrypt::xorDecrypt(std::vector<char> &data, std::vector<unsigned char> con
 }
 
 void Decrypt::caesarDecrypt(std::vector<char> &data, unsigned char const &key) {
-  for (int i = 0; i < data.size(); i++) {
+  for (unsigned int i = 0; i < data.size(); i++) {
     int tmp = static_cast<int>(data[i]) + static_cast<int>(key);
     if (tmp > 255)
       tmp -= 255;

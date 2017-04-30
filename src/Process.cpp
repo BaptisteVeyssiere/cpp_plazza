@@ -5,10 +5,9 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Wed Apr 19 11:21:23 2017 Nathan Scutari
-// Last update Sun Apr 30 16:36:02 2017 Nathan Scutari
+// Last update Sun Apr 30 16:53:45 2017 Baptiste Veyssiere
 //
 
-#include <iostream>
 #include <unistd.h>
 #include "Process.hpp"
 #include "Thread.hpp"
@@ -82,7 +81,6 @@ void	Process::thread_control(int id)
 	  orders.push_back(order);
       else if (orders_to_threads())
 	{
-	  std::cout << "Timeout: Process with id: " << id << std::endl;
 	  order.file = "end";
 	  order.threads = id;
 	  *pipe << order;
@@ -119,5 +117,4 @@ Process::~Process()
 {
   if (pipe)
     delete pipe;
-  std::cout << "Delete Process" << std::endl;
 }

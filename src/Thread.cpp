@@ -5,13 +5,14 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Sun Apr 30 04:10:36 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 04:10:57 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 17:13:55 2017 ilyas semmaoui
 //
 
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 #include <regex>
+#include "Finder.hpp"
 #include "Thread.hpp"
 
 Thread::Thread(std::shared_ptr<t_data> data) : thread(new std::thread(&Thread::mainLoop, this, data)) {
@@ -33,52 +34,22 @@ void Thread::detach() {
     thread->detach();
 }
 
-void Thread::findMail(std::vector<std::string> &data, std::string const &mem) {
-    std::regex  reg("[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.-]+");
-    std::smatch mail;
-    std::string content = mem;
-
-    while (std::regex_search(content, mail, reg)) {
-        data.push_back(mail.str());
-        content = mail.suffix().str();
-    }
-}
-
-void Thread::findIP(std::vector<std::string> &data, std::string const &mem) {
-    std::regex  reg("([2][0-5][0-5]|[1][0-9][0-9]|[1-9][0-9]|[0-9])\\.([2][0-5][0-5]|[1][0-9][0-9]|[1-9][0-9]|[0-9])\\.([2][0-5][0-5]|[1][0-9][0-9]|[1-9][0-9]|[0-9])\\.([2][0-5][0-5]|[1][0-9][0-9]|[1-9][0-9]|[0-9])");
-    std::smatch ip;
-    std::string content = mem;
-
-    while (std::regex_search(content, ip, reg)) {
-        data.push_back(ip.str());
-        content = ip.suffix().str();
-    }
-}
-
-void Thread::findPhone(std::vector<std::string> &data, std::string const &mem) {
-    std::regex  reg("([0-9]|[0-9] ){10}");
-    std::smatch phone;
-    std::string content = mem;
-
-    while (std::regex_search(content, phone, reg)) {
-        data.push_back(phone.str());
-        content = phone.suffix().str();
-    }
-}
-
-void Thread::findSomething(std::vector<std::string> &data, std::string const& mem, Information const& info) {
-    switch (info) {
-        case Information::EMAIL_ADDRESS :
-            findMail(data, mem);
-            break;
-        case Information::IP_ADDRESS :
-            findIP(data, mem);
-            break;
-        case Information::PHONE_NUMBER :
-            findPhone(data, mem);
-            break;
-        default:
-            break;
+void Thread::findSomething(std::vector<std::string> &data, std::string const& mem,
+			   Information const& info)
+{
+  switch (info)
+    {
+    case Information::EMAIL_ADDRESS :
+      Finder::findMail(data, mem);
+      break;
+    case Information::IP_ADDRESS :
+      Finder::findIP(data, mem);
+      break;
+    case Information::PHONE_NUMBER :
+      Finder::findPhone(data, mem);
+      break;
+    default:
+      break;
     }
 }
 

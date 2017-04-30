@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 04:41:05 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 16:44:19 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -124,10 +124,6 @@ void	Named_pipe::close_out(void)
 
 Named_pipe	&Named_pipe::operator<<(const t_command &command)
 {
-  std::cout << "Sending : file = " << command.file << ", threads = " << command.threads << ", data = ";
-  for (unsigned int i = 0; i < command.data.size(); i++)
-    std::cout << " " << command.data[i];
-  std::cout << std::endl;
   this->out << command.file << " " << command.information << " " << command.threads;
   if (command.data.size() > 0)
     {
@@ -153,9 +149,8 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
   size = pbuf->in_avail();
   if (size == 0)
     return (*this);
-  getline(this->in, line);
-  if (line.empty())
-    return (*this);
+  if (!getline(this->in, line) || line.empty() || this->in.fail())
+    throw std::exception();
   streamline << line;
   if (streamline.str()[0] == ' ')
     command.file = "";
@@ -172,9 +167,5 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
       streamline >> str;
     }
   std::for_each(command.data.begin(), command.data.end(), [&](std::string &result) { std::replace(result.begin(), result.end(), ':', ' '); });
-  std::cout << "Receiving : file = " << command.file << ", threads = " << command.threads << ", data = ";
-  for (unsigned int i = 0; i < command.data.size(); i++)
-    std::cout << command.data[i] << ", ";
-  std::cout << std::endl;
   return (*this);
 }

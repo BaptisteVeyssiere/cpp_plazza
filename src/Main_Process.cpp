@@ -5,25 +5,33 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 04:38:14 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 17:05:46 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process.hpp"
 
-int	ok = 0;
-
 Main_Process::Main_Process(unsigned int nbr)
-  : pattern(nbr), thread_nbr(nbr), process_nbr(0), pipe_tab(), activated()
+  : pattern(nbr), thread_nbr(nbr), process_nbr(0), pipe_tab(), activated(), pid(), log_file()
 {
   this->create_new_process();
+  this->log_file.open("logs.txt");
 }
 
-Main_Process::~Main_Process() {}
+Main_Process::~Main_Process()
+{
+  if (this->log_file.is_open())
+    this->log_file.close();
+}
 
 void	Main_Process::wait_process()
 {
+  int	status;
+
   while (this->process_nbr > 0)
     this->check_processes();
+  while (this->pid.size() > 0)
+    if (waitpid(this->pid[0], &status, WNOHANG))
+      this->pid.erase(this->pid.begin());
   std::for_each(this->pipe_tab.begin(), this->pipe_tab.end(),
 		[&](Named_pipe &fifo) { fifo.release(); });
 }
@@ -81,7 +89,6 @@ void	Main_Process::Add_pipe(unsigned int id)
       this->activated.push_back(true);
       this->pipe_tab.push_back(pipe);
     }
-
 }
 
 unsigned int	Main_Process::create_new_process()
@@ -89,14 +96,16 @@ unsigned int	Main_Process::create_new_process()
   unsigned int				id;
   std::string				fifoname;
   std::vector<Named_pipe>::iterator	it;
+  pid_t					ret;
 
   id = 0;
   while (id < this->pipe_tab.size() && this->activated[id])
     ++id;
-  if (this->pattern.clone(id))
+  if ((ret = this->pattern.clone(id)) == 0)
     exit(0);
   this->Add_pipe(id);
   ++this->process_nbr;
+  this->pid.push_back(ret);
   return (id);
 }
 
@@ -105,17 +114,17 @@ void	Main_Process::remove_process(int i, const t_command &command)
   this->pipe_tab[i] << command;
   this->activated[i] = false;
   --this->process_nbr;
-  std::cout << "Nbr of processes " << this->process_nbr << std::endl;
 }
 
-void	Main_Process::display_result(const t_command &command) const
+void	Main_Process::display_result(const t_command &command)
 {
   std::vector<std::string>	info { "PHONE_NUMBER", "EMAIL_ADDRESS", "IP_ADDRESS" };
 
-  std::cout << command.file << " " << info[command.information] << ":" << std::endl;
+  if (!this->log_file.is_open())
+    throw std::runtime_error("The log file is not open");
+  this->log_file << command.file << " " << info[command.information] << ":" << std::endl;
+  std::for_each(command.data.begin(), command.data.end(), [&](const std::string &str) { this->log_file << str << std::endl; });
   std::for_each(command.data.begin(), command.data.end(), [&](const std::string &str) { std::cout << str << std::endl; });
-  ++ok;
-  std::cout << ok << " commands received" << std::endl;
 }
 
 void		Main_Process::check_processes()
@@ -142,12 +151,9 @@ void		Main_Process::process_command(std::vector<t_command> &command_list)
   unsigned int	min;
   unsigned int	thread_it;
   unsigned int	id;
-  static int	ko = 0;
 
   for (unsigned int it = 0; it < command_list.size(); it++)
     {
-      ++ko;
-      std::cout << ko << " command sent" << std::endl;
       min = this->thread_nbr * 2;
       this->check_processes();
       for (int i = 0; i < static_cast<int>(this->process_nbr); i++)
