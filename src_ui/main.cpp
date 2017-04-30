@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Thu Apr 13 18:08:46 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 16:42:25 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 20:46:35 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -33,5 +33,12 @@ int		main(int ac, char **av, char **env)
       std::cerr << "Usage: ./plazza nbr_of_thread" << std::endl;
       return (1);
     }
-  return (init(thread_nbr));
+  try
+    {
+      return (init(thread_nbr));
+    }
+  catch (const std::exception &e)
+    {
+      std::cerr << e.what() << std::endl;
+    }
 }

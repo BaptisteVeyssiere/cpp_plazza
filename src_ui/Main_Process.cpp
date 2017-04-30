@@ -5,20 +5,22 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Wed Apr 26 23:24:02 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 19:42:16 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 20:44:08 2017 Baptiste Veyssiere
 //
 
 #include "Main_Process_ui.hpp"
 
 Main_Process::Main_Process(unsigned int nbr)
-  : pattern(nbr), thread_nbr(nbr), process_nbr(0), pipe_tab(), activated(), pid(), log_file(), interface(nbr)
+  : pattern(nbr), thread_nbr(nbr), process_nbr(0), pipe_tab(), activated(), pid(), log_file(), interface(NULL)
 {
+  this->interface = new Ui(nbr);
   this->create_new_process();
   this->log_file.open("logs.txt");
 }
 
 Main_Process::~Main_Process()
 {
+  delete this->interface;
   if (this->log_file.is_open())
     this->log_file.close();
 }
@@ -46,21 +48,19 @@ int	Main_Process::loop()
   std::string			str;
 
   std::cin.sync_with_stdio(false);
+  str = "";
   try
     {
       pbuf = std::cin.rdbuf();
       size = pbuf->in_avail();
       while (size > 0)
 	{
-	  std::cout << "a" << std::endl;
 	  if (getline(std::cin, command))
 	    {
-	      std::cout << "b" << std::endl;
 	      parser.parse(command, command_list);
 	      this->process_command(command_list);
-	      std::cout << "pass" << std::endl;
-	      if ((str = this->interface.refresh()) == "exit")
-		break;
+	      if ((str = this->interface->refresh()) == "exit")
+	      	break;
 	      command.clear();
 	      command_list.clear();
 	      this->check_processes();
@@ -68,20 +68,20 @@ int	Main_Process::loop()
 	  pbuf = std::cin.rdbuf();
 	  size = pbuf->in_avail();
 	}
-      while (1)
-	if ((str = this->interface.refresh()) == "exit")
-	  break;
-	else if (str != "")
-	  {
-	    command_list.clear();
-	    parser.parse(str, command_list);
-	    this->process_command(command_list);
-	    std::cout << "pass" << std::endl;
-	    if ((str = this->interface.refresh()) == "exit")
-	      break;
-	    str.clear();
-	    this->check_processes();
-	  }
+      while (str != "exit")
+	{
+	  if ((command = this->interface->refresh()) == "exit")
+	    break;
+	  else if (command != "")
+	    {
+	      command_list.clear();
+	      parser.parse(command, command_list);
+	      this->process_command(command_list);
+	      command.clear();
+	      this->check_processes();
+	    }
+	  this->check_processes();
+	}
       this->wait_process();
     }
   catch (const std::exception &e)
@@ -141,7 +141,7 @@ void	Main_Process::display_result(const t_command &command)
     throw std::runtime_error("The log file is not open");
   this->log_file << command.file << " " << info[command.information] << ":" << std::endl;
   std::for_each(command.data.begin(), command.data.end(), [&](const std::string &str) { this->log_file << str << std::endl; });
-  this->interface.addOrder(command);
+  this->interface->addOrder(command);
 }
 
 void		Main_Process::check_processes()

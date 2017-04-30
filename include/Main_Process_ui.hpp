@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Thu Apr 27 00:21:57 2017 Baptiste Veyssiere
-// Last update Sun Apr 30 18:21:35 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 20:32:39 2017 Baptiste Veyssiere
 //
 
 #ifndef __MAIN_PROCESS_UI_HPP__
@@ -30,7 +30,7 @@ private:
   std::vector<bool>		activated;
   std::vector<pid_t>		pid;
   std::ofstream			log_file;
-  Ui				interface;
+  Ui				*interface;
 
 private:
   Main_Process(const Main_Process &);
