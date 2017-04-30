@@ -1,5 +1,11 @@
 //
-// Created by ilyas on 17/04/17.
+// Thread.cpp for Project-Master in /home/veyssi_b/rendu/tek2/CPP/cpp_plazza
+//
+// Made by Baptiste Veyssiere
+// Login   <veyssi_b@epitech.net>
+//
+// Started on  Sun Apr 30 04:10:36 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 04:10:57 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -104,7 +110,6 @@ void Thread::mainLoop(std::shared_ptr<t_data> data) {
         }
         data->running = 1;
         data->ready = 0;
-	//std::cout << "File: " << data->command.file << std::endl;
         std::string mem = getFileData(data->command.file);
         if (mem != "") {
 	  std::vector<std::string> fileData;

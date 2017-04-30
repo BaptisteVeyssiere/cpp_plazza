@@ -1,5 +1,5 @@
 ##
-## Makefile for 42sh in /home/VEYSSI_B/rendu/Programmation_Shell/test/test_42tree06 77 40 81 84
+## Makefile for 42sh in /home/VEYSSI_B/rendu/Programmation_Shell/test/test_42tree
 ##
 ## Made by Baptiste veyssiere
 ## Login   <VEYSSI_B@epitech.net>

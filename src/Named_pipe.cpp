@@ -5,7 +5,7 @@
 // Login   <veyssi_b@epitech.net>
 //
 // Started on  Tue Apr 25 22:08:41 2017 Baptiste Veyssiere
-// Last update Sat Apr 29 21:20:00 2017 Baptiste Veyssiere
+// Last update Sun Apr 30 04:41:05 2017 Baptiste Veyssiere
 //
 
 #include <iostream>
@@ -83,7 +83,6 @@ bool	Named_pipe::checkFifo(const std::string &file) const
   struct stat	statstruct;
   int		result;
 
-  //std::cout << "stat with file " << file << std::endl;
   if (file.empty())
     return (false);
   result = stat(file.c_str(), &statstruct);
@@ -132,8 +131,7 @@ Named_pipe	&Named_pipe::operator<<(const t_command &command)
   this->out << command.file << " " << command.information << " " << command.threads;
   if (command.data.size() > 0)
     {
-      this->out << " ";
-      std::for_each(command.data.begin(), command.data.end(), [&](const std::string &str) { this->out << str << " "; });
+      std::for_each(command.data.begin(), command.data.end(), [&](const std::string &str) { this->out << " " << str; });
     }
   this->out << std::endl;
   return (*this);
@@ -148,7 +146,7 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
   std::streamsize	size;
   std::string		str;
 
-  command.data.clear();
+  command = {};
   if (!this->checkFifo(this->path_in))
     return (*this);
   pbuf = this->in.rdbuf();
@@ -176,7 +174,7 @@ Named_pipe		&Named_pipe::operator>>(t_command &command)
   std::for_each(command.data.begin(), command.data.end(), [&](std::string &result) { std::replace(result.begin(), result.end(), ':', ' '); });
   std::cout << "Receiving : file = " << command.file << ", threads = " << command.threads << ", data = ";
   for (unsigned int i = 0; i < command.data.size(); i++)
-    std::cout << command.data[i] << "|";
-  std::cout << "Via command " << line << std::endl;
+    std::cout << command.data[i] << ", ";
+  std::cout << std::endl;
   return (*this);
 }

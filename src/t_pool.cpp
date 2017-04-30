@@ -5,7 +5,7 @@
 // Login   <scutar_n@epitech.net>
 //
 // Started on  Fri Apr 28 17:46:40 2017 Nathan Scutari
-// Last update Sat Apr 29 19:07:07 2017 Nathan Scutari
+// Last update Sat Apr 29 23:50:31 2017 ilyas semmaoui
 //
 
 #include "t_pool.hpp"
@@ -41,7 +41,7 @@ int	T_pool::getFinishedOrder(t_command &result)
     }
   return (0);
 }
-
+#include <iostream>
 int	T_pool::getRunningThreadsNbr()
 {
   int	nbr;
